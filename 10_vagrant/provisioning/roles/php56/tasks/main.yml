@@ -1,0 +1,43 @@
+- name: Install EPEL repository
+  yum: name=epel-release state=present
+  tags:
+    - php56
+
+- name: Install Remi repository
+  yum: name="http://rpms.remirepo.net/enterprise/remi-release-7.rpm"
+  tags:
+    - php56
+
+- name: Install PHP 5.6
+  yum: name={{ item }} state=present enablerepo=remi-php56
+  with_items:
+    - php
+    - php-cli
+    - php-common
+    - php-devel
+    - php-json
+    - php-mysql
+    - php-mbstring
+    - php-mcrypt
+    - php-opcache
+    - php-pdo
+    - php-pear
+    - php-pecl-memcached
+    - php-pecl-zip
+    - php-process
+  notify:
+    - Restart Apache
+  tags:
+    - php56
+
+- name: Transfer custom php.ini
+  copy: src=roles/php/files/custom_php.ini dest=/etc/php.d/custom_php.ini
+  notify:
+    - Restart Apache
+  tags:
+    - php56
+
+- name: Install composer.phar
+  shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer creates=/usr/bin/composer
+  tags:
+    - php56

@@ -1,0 +1,14 @@
+---
+- name: Transfer vhosts.conf template
+  template:
+    src=roles/apache/templates/vhosts.conf.j2
+    dest=/etc/httpd/conf.d/vhosts.conf
+    owner=root
+    group=root
+    mode=0644
+  notify:
+    - Restart Apache
+
+- name: Restart Apache and enable auto start
+  service: name=httpd state=started enabled=yes
+

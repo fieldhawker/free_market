@@ -1,0 +1,3 @@
+---
+apache_document_root: /vagrant/src/public
+apache_server_name: myvagrant.dev

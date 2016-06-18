@@ -1,0 +1,11 @@
+---
+- name: Install apache
+  include: install.yml
+  tags:
+    - apache
+
+- name: Transfer vhosts.conf template
+  include: setup.yml
+  tags:
+    - apache
+

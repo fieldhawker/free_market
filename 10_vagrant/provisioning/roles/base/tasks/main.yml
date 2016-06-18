@@ -1,0 +1,31 @@
+---
+- name: Setting timezone
+  command: timedatectl set-timezone {{ base_timezone }}
+
+- name: Update OS
+  shell: "yum -y update"
+
+- name: Install app
+  yum: name={{ item }} state=present
+  with_items:
+    - vim
+    - git
+    - ntp
+    - wget
+    - MySQL-python
+    
+- name: Start ntpd and enable auto start.
+  service: name=ntpd state=started enabled=yes
+
+- name: Install libselinux-python
+  yum: name=libselinux-python state=present
+
+- name: Permissive selinux
+  selinux: policy=targeted state=permissive
+
+#- name: wget python
+#  shell: "wget http://ftp-srv2.kddilabs.jp/Linux/distributions/fedora/epel/beta/7/x86_64/epel-release-7-0.2.noarch.rpm"
+#- name: rpm python
+#  shell: "rpm -ivh epel-release-7-0.2.noarch.rpm"
+#- name: Install python
+#  shell: "yum install -y python-pip"

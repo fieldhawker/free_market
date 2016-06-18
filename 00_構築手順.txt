@@ -1,0 +1,149 @@
+
+■ MACでの開発環境構築
+
+1. boxを作成 (CentOS7.0 x86_64 minimal (VirtualBoxGuestAddtions 4.3.14))
+
+cd 10_vagrant
+vagrant box add CentOS7 https://f0fff3908f081cb6461b407be80daf97f07ac418.googledrive.com/host/0BwtuV7VyVTSkUG1PM3pCeDJ4dVE/centos7.box
+
+2. Guest Additionを自動更新できるように
+vagrant plugin install vagrant-vbguest
+
+3. 初期化
+vagrant init CentOS7
+
+4. vagrant 起動
+vagrant up
+
+X. プロビジョンがうまくいかなかったら直してリトライ
+vagrant provision
+
+5. envファイル作成
+vagrant ssh
+cd /usr/share/nginx/html/free_market
+cp -p .env.example .env
+
+6. vender系のインストール
+cd /usr/share/nginx/html/free_market
+composer install
+
+7. マイグレーション
+cd /usr/share/nginx/html/free_market
+php artisan migrate:refresh --seed
+
+
+
+============================================
+
+■  環境
+----------------------
+# ブラウザアクセス
+http://192.168.33.10/users/
+http://192.168.33.10/admin/
+
+# API
+http://192.168.33.10/api/users  ※要管理者ログイン
+
+# テストアカウント
+
+## users
+mail : dev@se-project.co.jp
+pass : password
+
+## admin
+mail : dev@se-project.co.jp
+pass : password
+
+# テスト自動化
+
+## API
+./vendor/bin/phpunit tests/api
+
+
+# コード整形
+
+## code sniffer
+vendor/bin/phpcs --standard=phpcs.xml --extensions=php .
+
+## phpmd
+vendor/bin/phpmd . text ruleset.xml --suffixes php --exclude node_modules,resources,storage,vendor
+
+----------------------
+# nginx
+
+##  起動
+sudo service nginx start
+
+##  設定
+/etc/nginx/conf.d/
+
+##  ログ
+/var/log/nginx/
+
+## Document Root
+/usr/share/nginx/html/free_market/public
+
+----------------------
+# mariadb (mysql)
+
+##  起動
+
+##  設定
+
+##  ログ
+
+----------------------
+# vagrant
+
+## 再構築
+vagrant halt && vagrant destroy -f && vagrant up
+
+===================================================
+
+■ MACでの開発環境構築 (初回)
+
+1. boxを作成 (CentOS7.0 x86_64 minimal (VirtualBoxGuestAddtions 4.3.14))
+
+cd 10_vagrant
+vagrant box add CentOS7 https://f0fff3908f081cb6461b407be80daf97f07ac418.googledrive.com/host/0BwtuV7VyVTSkUG1PM3pCeDJ4dVE/centos7.box
+
+vagrant init CentOS7
+
+2. mountでこけるのでGuest Additionを構築
+
+vagrant ssh
+sudo /etc/init.d/vboxadd setup
+exit
+
+3. もういっかい
+vagrant reload
+
+4. プロビジョンがうまくいかなかったら直してリトライ
+vagrant provision
+
+5. Guest Additionを自動更新できるように
+vagrant plugin install vagrant-vbguest
+
+
+----------------------
+
+1. laravel を導入
+composer global require "laravel/installer"
+
+2. laravelでプロジェクト作成
+laravel new free_market
+
+cd free_market
+chmod -R 775 storage
+chmod -R 775 bootstrap/cache/
+
+3. 認証機能の自動生成
+php artisan make:auth
+php artisan migrate
+
+4. multiAuth対応
+php artisan make:model Admin
+テーブル作成とseedの準備をして
+php artisan migrate:refresh --seed
+
+

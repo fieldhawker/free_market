@@ -1,0 +1,8 @@
+# group_vars/develop
+---
+mysql_root_password: 'pass'
+
+mysql_db_name: 'market'
+
+mysql_db_user: 'market'
+mysql_db_password: 'maria'

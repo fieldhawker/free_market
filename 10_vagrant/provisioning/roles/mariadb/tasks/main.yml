@@ -1,0 +1,64 @@
+---
+- name: Transfer MariaDB.repo template
+  copy:
+    src=roles/mariadb/files/repos/MariaDB.repo
+    dest=/etc/yum.repos.d/MariaDB.repo
+    owner=root
+    group=root
+    mode=0644
+  tags:
+    - mariadb
+
+- name: Installing MariaDB instead of MySQL.
+  yum: name={{ item }} state=present
+  with_items:
+    - MariaDB-server
+    - MariaDB-client
+  tags:
+    - mariadb
+    
+- name: Start MariaDB and enable auto start.
+  service: name=mysql state=started enabled=yes
+  tags:
+    - mariadb
+    
+- name: put my.cnf.d/client.cnf
+  template: src=roles/mariadb/files/client.cnf.j2 dest=/etc/my.cnf.d/client.cnf
+  tags:
+    - mariadb
+    
+- name: put my.cnf
+  template: src=roles/mariadb/files/my.cnf.j2 dest=/etc/my.cnf
+  tags:
+    - mariadb
+    
+- name: root アカウントのパスワードを設定
+  mysql_user:
+    name: root
+    password: "{{ mysql_root_password }}"
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    check_implicit_admin: yes
+  tags:
+    - mariadb
+
+- name: データベース market を作成
+  mysql_db:
+    name: "{{ mysql_db_name }}"
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    state: present
+  tags:
+    - mariadb
+
+- name: MySQLユーザー market を作成し，market.* にすべての権限を与える
+  mysql_user:
+    name: "{{ mysql_db_user }}"
+    password: "{{ mysql_db_password }}"
+    priv: "{{ mysql_db_user }}.*:ALL"
+    host: localhost
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    state: present
+  tags:
+    - mariadb

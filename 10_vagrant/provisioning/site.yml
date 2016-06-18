@@ -1,0 +1,10 @@
+---
+- hosts: web_servers
+  become: true
+  user: vagrant
+  roles:
+    - base
+    - nginx
+    - php
+#    - apache
+    - mariadb

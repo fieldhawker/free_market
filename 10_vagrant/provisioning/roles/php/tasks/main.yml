@@ -1,0 +1,58 @@
+- name: Install EPEL repository
+  yum: name=epel-release state=present
+  tags:
+    - php
+
+- name: Install Remi repository
+  yum: name="http://rpms.remirepo.net/enterprise/remi-release-7.rpm"
+  tags:
+    - php
+  
+- name: install php-fpm
+  yum: name=php-fpm state=latest
+  tags:
+    - php
+      
+- name: apply www.conf
+  copy: src=roles/php/files/www.conf dest=/etc/php-fpm.d/www.conf backup=yes
+  tags:
+    - php
+    
+- name: restart php-fpm
+  service: name=php-fpm state=restarted
+  tags:
+    - php
+      
+- name: chkconfig php-fpm
+  command: chkconfig php-fpm on
+  tags:
+    - php
+            
+- name: Install PHP 7.0
+  yum: name={{ item }} state=present enablerepo=remi-php70
+  with_items:
+    - php
+    - php-devel
+    - php-fpm
+    - php-mbstring
+    - php-pdo
+    - php-mcrypt
+    - php-mysqlnd
+    - php-opcache
+    - php-xml
+  tags:
+    - php
+
+# テンプレートファイルからphp.iniを作成
+#- name: Transfer custom php.ini
+#  copy: src=roles/php/files/custom_php.ini dest=/etc/php.d/custom_php.ini
+#  notify:
+#    - Restart Nginx
+#  tags:
+#    - php
+
+- name: Install composer.phar
+  shell: curl -sS https://getcomposer.org/installer
+          | php -- --install-dir=/usr/bin --filename=composer creates=/usr/bin/composer
+  tags:
+    - php
