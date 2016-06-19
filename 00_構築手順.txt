@@ -9,29 +9,32 @@ vagrant box add CentOS7 https://f0fff3908f081cb6461b407be80daf97f07ac418.googled
 2. Guest Additionを自動更新できるように
 vagrant plugin install vagrant-vbguest
 
-3. 初期化
-vagrant init CentOS7
+3. ファイル権限を変更 (provisioning/hostsだけでも良いっぽい)
+cd ../
+find . -type f -print | xargs chmod 644
 
 4. vagrant 起動
+cd 10_vagrant
 vagrant up
 
 X. プロビジョンがうまくいかなかったら直してリトライ
 vagrant provision
 
-5. envファイル作成
+5. vender系のインストール
 vagrant ssh
 cd /usr/share/nginx/html/free_market
-cp -p .env.example .env
-
-6. vender系のインストール
-cd /usr/share/nginx/html/free_market
 composer install
+
+6. envファイル作成
+cd /usr/share/nginx/html/free_market
+cp -p .env.example .env
+php artisan key:generate
 
 7. マイグレーション
 cd /usr/share/nginx/html/free_market
 php artisan migrate:refresh --seed
 
-
+8. ブラウザアクセスして動作確認
 
 ============================================
 
@@ -60,7 +63,7 @@ pass : password
 ./vendor/bin/phpunit tests/api
 
 
-# コード整形
+# 便利ツール
 
 ## code sniffer
 vendor/bin/phpcs --standard=phpcs.xml --extensions=php .
@@ -87,6 +90,7 @@ sudo service nginx start
 # mariadb (mysql)
 
 ##  起動
+sudo service mariadb start
 
 ##  設定
 
