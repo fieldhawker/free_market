@@ -43,13 +43,19 @@
   tags:
     - php
 
-# テンプレートファイルからphp.iniを作成
-#- name: Transfer custom php.ini
-#  copy: src=roles/php/files/custom_php.ini dest=/etc/php.d/custom_php.ini
+#- name: Transfer php.ini
+#  copy: src=roles/php/files/php.ini dest=/etc/php.ini
 #  notify:
 #    - Restart Nginx
 #  tags:
 #    - php
+    
+- name: Transfer custom_php.ini
+  copy: src=roles/php/files/custom_php.ini dest=/etc/php.d/custom_php.ini
+  notify:
+    - Restart php-fpm
+  tags:
+    - php
 
 - name: Install composer.phar
   shell: curl -sS https://getcomposer.org/installer
