@@ -71,6 +71,9 @@ vendor/bin/phpcs --standard=phpcs.xml --extensions=php .
 ## phpmd
 vendor/bin/phpmd . text ruleset.xml --suffixes php --exclude node_modules,resources,storage,vendor
 
+## 管理画面テンプレート
+https://almsaeedstudio.com/themes/AdminLTE/index2.html
+
 ----------------------
 # nginx
 

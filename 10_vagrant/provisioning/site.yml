@@ -1,5 +1,6 @@
 ---
 - hosts: web_servers
+  connection: local
   become: true
   user: vagrant
   roles:

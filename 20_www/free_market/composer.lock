@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "0df2a797b717b8ca76df9252f7e160ef",
-    "content-hash": "24d4d5c4a484bad707715e6b2b496337",
+    "hash": "ad2469a39d61fc84ec5fdc2cc312acf1",
+    "content-hash": "4198e0ecf0b7ad118cc6f65afbf4fc4f",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -1780,6 +1780,46 @@
         }
     ],
     "packages-dev": [
+        {
+            "name": "almasaeed2010/adminlte",
+            "version": "v2.3.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/almasaeed2010/AdminLTE.git",
+                "reference": "8db979795044412a2e2b4e9659788c23cb59fcd3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/almasaeed2010/AdminLTE/zipball/8db979795044412a2e2b4e9659788c23cb59fcd3",
+                "reference": "8db979795044412a2e2b4e9659788c23cb59fcd3",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Abdullah Almsaeed",
+                    "email": "support@almsaeedstudio.com"
+                }
+            ],
+            "description": "AdminLTE - admin control panel and dashboard that's based on Bootstrap 3",
+            "homepage": "http://almsaeedstudio.com/",
+            "keywords": [
+                "JS",
+                "admin",
+                "back-end",
+                "css",
+                "less",
+                "responsive",
+                "template",
+                "theme",
+                "web"
+            ],
+            "time": "2016-03-24 14:31:41"
+        },
         {
             "name": "barryvdh/laravel-debugbar",
             "version": "v2.2.2",
