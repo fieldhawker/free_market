@@ -17,11 +17,6 @@
   tags:
     - mariadb
     
-- name: Start MariaDB and enable auto start.
-  service: name=mysql state=started enabled=yes
-  tags:
-    - mariadb
-    
 - name: put my.cnf.d/client.cnf
   template: src=roles/mariadb/files/client.cnf.j2 dest=/etc/my.cnf.d/client.cnf
   tags:
@@ -31,6 +26,16 @@
   template: src=roles/mariadb/files/my.cnf.j2 dest=/etc/my.cnf
   tags:
     - mariadb
+    
+- name: Start MariaDB and enable auto start.
+  service: name=mariadb state=started enabled=yes
+  tags:
+    - mariadb
+    
+#- name: set auto start MariaDB
+#  command: systemctl enable mariadb.service
+#  tags:
+#    - mariadb
     
 - name: root アカウントのパスワードを設定
   mysql_user:
@@ -60,5 +65,10 @@
     login_user: root
     login_password: "{{ mysql_root_password }}"
     state: present
+  tags:
+    - mariadb
+
+- name: restart MariaDB
+  command: systemctl restart mariadb.service
   tags:
     - mariadb

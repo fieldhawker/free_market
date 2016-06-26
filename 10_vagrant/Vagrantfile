@@ -14,7 +14,7 @@ Vagrant.configure(2) do |config|
   
     ansible.playbook = "provisioning/site.yml"
     ansible.install        = true
-    ansible.verbose        = "vvvv"
+#    ansible.verbose        = "vvvv"
     #ansible.extra_vars = { ansible_ssh_user: 'vagrant' }
     ansible.inventory_path = "provisioning/hosts"
     ansible.limit          = "all"
