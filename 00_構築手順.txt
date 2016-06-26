@@ -9,6 +9,9 @@ vagrant box add CentOS7 https://f0fff3908f081cb6461b407be80daf97f07ac418.googled
 2. Guest Additionを自動更新できるように
 vagrant plugin install vagrant-vbguest
 
+2. 再構築を早くする
+vagrant plugin install vagrant-cachier
+
 3. ファイル権限を変更 (provisioning/hostsだけでも良いっぽい)
 cd ../
 find . -type f -print | xargs chmod 644

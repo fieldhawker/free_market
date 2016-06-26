@@ -16,7 +16,7 @@
 //    return view('welcome');
 //});
 
-Route::group(['middleware' => 'web'], function () {
+//Route::group(['middleware' => 'web'], function () {
 
     // multi auth なのでデフォルトは使わない
     //Route::auth();
@@ -66,8 +66,11 @@ Route::group(['middleware' => 'web'], function () {
         $this->post('/password/email', 'AdminAuth\PasswordController@sendResetLinkEmail');
         $this->post('/password/reset', 'AdminAuth\PasswordController@reset');
 
-        Route::get('/', 'AdminHomeController@index');
-        Route::get('/home', 'AdminHomeController@index');
+        // Home
+        Route::get('/', 'Admin\HomeController@index');
+        Route::get('/home', 'Admin\HomeController@index');
+
+        Route::resource('/users', 'Admin\UsersController');
 
     });
 
@@ -84,5 +87,5 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/', 'HomeController@index');
     Route::get('/home', 'HomeController@index');
 
-});
+//});
 

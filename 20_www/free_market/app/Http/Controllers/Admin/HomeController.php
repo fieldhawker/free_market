@@ -1,16 +1,20 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class AdminHomeController extends Controller
+/**
+ * Class HomeController
+ * @package App\Http\Controllers\Admin
+ */
+class HomeController extends Controller
 {
+
     /**
-     * Create a new controller instance.
-     *
-     * @return void
+     * HomeController constructor.
      */
     public function __construct()
     {
@@ -24,6 +28,6 @@ class AdminHomeController extends Controller
      */
     public function index()
     {
-        return view('admin_home');
+        return view('admin.home');
     }
 }

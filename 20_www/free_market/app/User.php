@@ -2,19 +2,34 @@
 
 namespace App;
 
+use DB;
+use Hash;
+use Validator;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Class User
+ * @package App
+ */
 class User extends Authenticatable
 {
+    use SoftDeletes;
+
+    /**
+     * @var string
+     */
     protected $table = "users";
-    
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+      'name',
+      'email',
+      'password'
     ];
 
     /**
@@ -23,6 +38,147 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+      'password',
+      'remember_token',
     ];
+
+    /**
+     * @var array
+     */
+    private $rules = [
+      'name'     => 'required|string|min:2|max:256',
+      'email'    => 'required|email|unique:users,email,%s,id,deleted_at,NULL',
+      'password' => 'sometimes|required|min:6',
+    ];
+
+    /**
+     * @var array
+     */
+    private $messages = [
+//      'required' => ':attributeフィールドは必須です。',
+//      'string' => ':attributeフィールドは文字列で入力してください。',
+//      'min' => ':attributeフィールドは:sizeより大きく。',
+//      'max' => ':attributeフィールドは:sizeより小さく。',
+//      'email' => ':attributeフィールドはメールで。',
+//      'unique' => ':attributeフィールドはユニークで。',
+    ];
+
+    /**
+     * 日付により変更を起こすべき属性
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at'];
+
+    /**
+     * @var
+     */
+    private $errors;
+
+    /**
+     *
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        self::creating(function ($user) {
+            $user->onCreatingHandler();
+        });
+        self::updating(function ($user) {
+            return $user->onUpdatingHandler();
+        });
+    }
+
+
+    /**
+     * @return bool
+     */
+    private function onCreatingHandler()
+    {
+        //update時刻を記録したり何かする
+        return true; //キャンセルしたいときはfalseを返す
+    }
+
+
+    /**
+     * @return bool
+     */
+    private function onUpdatingHandler()
+    {
+        //update時刻を記録したり何かする
+        return true; //キャンセルしたいときはfalseを返す
+    }
+
+    /**
+     * @param        $data
+     * @param string $id
+     *
+     * @return bool
+     */
+    public function validate($data, $id = 'NULL')
+    {
+
+        $rules          = $this->rules;
+        $rules['email'] = sprintf($rules['email'], $id);
+
+        $v = Validator::make($data, $rules, $this->messages);
+
+        if ($v->fails()) {
+            // この部分注意
+            $this->errors = $v->errors();
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function errors()
+    {
+        return $this->errors;
+    }
+
+    /**
+     * @param $data
+     */
+    public function registerGetId($data)
+    {
+
+        DB::transaction(function () use ($data) {
+
+            // インサート処理
+            $id = DB::table('users')->insertGetId(
+              ['name' => $data->name],
+              ['email' => $data->email],
+              ['password' => Hash::make($data->password)]
+            );
+
+            return $id;
+        });
+
+    }
+
+    /**
+     * @param $data
+     * @param $id
+     */
+    public function update_users($data, $id)
+    {
+
+        DB::transaction(function () use ($data, $id) {
+
+            // アップデート処理
+            User::where('id', '=', $id)->update(
+              ['name' => $data["name"]],
+              ['email' => $data["email"]]
+            );
+
+            return true;
+        });
+
+    }
 }

@@ -18,13 +18,19 @@ class UserTableSeeder extends Seeder
           'email' => 'dev@se-project.co.jp',
           'password' => bcrypt('password'),
         ]);
-        
-//        for ($i = 1; $i < 100; $i++) {
-//            DB::table('users')->insert([
-//              'name' => 'テスト' . $i,
-//              'email' => 'test' . $i . '@example.com',
-//              'password' => bcrypt('password'),
-//            ]);
-//        }
+
+        DB::table('users')->insert([
+          'name' => 'テスト2',
+          'email' => 'takano@se-project.co.jp',
+          'password' => bcrypt('password'),
+        ]);
+
+        for ($i = 1; $i < 100; $i++) {
+            DB::table('users')->insert([
+              'name' => 'テスト' . $i,
+              'email' => 'test' . $i . '@example.com',
+              'password' => bcrypt('password'),
+            ]);
+        }
     }
 }
