@@ -23,6 +23,13 @@ vagrant up
 X. プロビジョンがうまくいかなかったら直してリトライ
 vagrant provision
 
+5-0. Windowsでのvagrant ssh
+Windows上のcmd.exeではvagrant sshは不可な様なので
+puttyやteratermを使って接続してください。以後の作業は同様です。
+IP:192.168.33.10 
+user:vagrant
+pass:vagrant
+
 5. vender系のインストール
 vagrant ssh
 cd /usr/share/nginx/html/free_market
