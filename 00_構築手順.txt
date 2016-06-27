@@ -1,6 +1,8 @@
 
 ■ MACでの開発環境構築
 
+0. Windowsの場合は管理者として実行でcmd.exeを起動してください。
+
 1. boxを作成 (CentOS7.0 x86_64 minimal (VirtualBoxGuestAddtions 4.3.14))
 
 cd 10_vagrant
@@ -12,7 +14,7 @@ vagrant plugin install vagrant-vbguest
 2. 再構築を早くする
 vagrant plugin install vagrant-cachier
 
-3. ファイル権限を変更 (provisioning/hostsだけでも良いっぽい)
+3. ファイル権限を変更 (provisioning/hostsだけでも良いっぽい。windowsでは不要？)
 cd ../
 find . -type f -print | xargs chmod 644
 
@@ -30,21 +32,14 @@ IP:192.168.33.10
 user:vagrant
 pass:vagrant
 
-5. vender系のインストール
+5. SSH接続
 vagrant ssh
-cd /usr/share/nginx/html/free_market
-composer install
 
-6. envファイル作成
-cd /usr/share/nginx/html/free_market
-cp -p .env.example .env
-php artisan key:generate
+6. 初期設定用のshを実行
+cd /usr/share/nginx/html/
+./init.sh
 
-7. マイグレーション
-cd /usr/share/nginx/html/free_market
-php artisan migrate:refresh --seed
-
-8. ブラウザアクセスして動作確認
+7. ブラウザアクセスして動作確認
 
 ============================================
 
@@ -163,4 +158,57 @@ php artisan make:model Admin
 テーブル作成とseedの準備をして
 php artisan migrate:refresh --seed
 
+============================================
 
+※修正前の手順
+
+■ MACでの開発環境構築
+
+0. Windowsの場合は管理者として実行でcmd.exeを起動してください。
+
+1. boxを作成 (CentOS7.0 x86_64 minimal (VirtualBoxGuestAddtions 4.3.14))
+
+cd 10_vagrant
+vagrant box add CentOS7 https://f0fff3908f081cb6461b407be80daf97f07ac418.googledrive.com/host/0BwtuV7VyVTSkUG1PM3pCeDJ4dVE/centos7.box
+
+2. Guest Additionを自動更新できるように
+vagrant plugin install vagrant-vbguest
+
+2. 再構築を早くする
+vagrant plugin install vagrant-cachier
+
+3. ファイル権限を変更 (provisioning/hostsだけでも良いっぽい)
+cd ../
+find . -type f -print | xargs chmod 644
+
+4. vagrant 起動
+cd 10_vagrant
+vagrant up
+
+X. プロビジョンがうまくいかなかったら直してリトライ
+vagrant provision
+
+5-0. Windowsでのvagrant ssh
+Windows上のcmd.exeではvagrant sshは不可な様なので
+puttyやteratermを使って接続してください。以後の作業は同様です。
+IP:192.168.33.10 
+user:vagrant
+pass:vagrant
+
+5. vender系のインストール
+vagrant ssh
+cd /usr/share/nginx/html/free_market
+composer install
+
+6. envファイル作成
+cd /usr/share/nginx/html/free_market
+cp -p .env.example .env
+php artisan key:generate
+
+7. マイグレーション
+cd /usr/share/nginx/html/free_market
+php artisan migrate:refresh --seed
+
+8. ブラウザアクセスして動作確認
+
+============================================
