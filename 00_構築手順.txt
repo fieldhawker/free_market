@@ -110,6 +110,20 @@ sudo service mariadb start
 ## 再構築
 vagrant halt && vagrant destroy -f && vagrant up
 
+# laravel
+
+## モデル作成・シード作成用マイグレーション
+php artisan make:migration create_operation_logs_table
+php artisan make:seeder OperationLogsTableSeeder
+
+php artisan make:migration create_exclusives_table
+php artisan make:seeder ExclusivesTableSeeder
+
+
+## モデル作成
+php artisan make:model OperationLogs
+php artisan make:model Exclusives
+
 ===================================================
 
 ■ MACでの開発環境構築 (初回)

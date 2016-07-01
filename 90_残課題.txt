@@ -4,10 +4,6 @@ phpmyadminの導入と自動化  composerではなくyumっぽいかな
 
 システムログの定期的な消し込みも用意する？
 
-ログは登録更新削除を対象にinfo
-
-Log::info('会員登録が登録されました。', ['id' => $user->insert_id]);
-
 
 40X,50X系画面の作成
 
