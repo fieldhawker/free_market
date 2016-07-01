@@ -27,7 +27,9 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
+      'uid',
       'name',
+      'kana',
       'email',
       'password'
     ];
@@ -47,6 +49,7 @@ class User extends Authenticatable
      */
     private $rules = [
       'name'     => 'required|string|min:2|max:256',
+      'kana'     => 'required|string|min:2|max:256',
       'email'    => 'required|email|unique:users,email,%s,id,deleted_at,NULL',
       'password' => 'sometimes|required|min:6',
     ];
@@ -154,7 +157,7 @@ class User extends Authenticatable
         if ($this->validate($data)) {
 
             $data["password"] = Hash::make($data["password"]);
-            $data["uid"]      = hash("sha256",uniqid(mt_rand(10,10), 1));
+            $data["uid"]      = hash("sha256", uniqid(mt_rand(10, 10), 1));
             $id               = DB::table('users')->insertGetId($data);
 
             return $id;
