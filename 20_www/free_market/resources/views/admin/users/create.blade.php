@@ -54,28 +54,32 @@
                             <h4>名前</h4>
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                                <input type="text" name="name" class="form-control input-lg" placeholder="名前太郎">
+                                <input type="text" name="name" class="form-control input-lg" placeholder="名前太郎" 
+                                       value="{{ old('name', null) }}">
                                 <span class="input-group-addon"><i class="fa fa-check"></i></span>
                             </div>
 
                             <h4>カナ</h4>
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                                <input type="text" name="kana" class="form-control input-lg" placeholder="ナマエタロウ">
+                                <input type="text" name="kana" class="form-control input-lg" placeholder="ナマエタロウ"
+                                       value="{{ old('kana', null) }}">
                                 <span class="input-group-addon"><i class="fa fa-check"></i></span>
                             </div>
 
                             <h4>メールアドレス</h4>
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
-                                <input type="email" name="email" class="form-control input-lg" placeholder="xxxxx@xxxxxx.xxx">
+                                <input type="email" name="email" class="form-control input-lg" placeholder="xxxxx@xxxxxx.xxx"
+                                       value="{{ old('email', null) }}">
                                 <span class="input-group-addon"><i class="fa fa-check"></i></span>
                             </div>
 
                             <h4>パスワード</h4>
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-unlock-alt"></i></span>
-                                <input type="password" name="password" class="form-control input-lg" placeholder="Password">
+                                <input type="password" name="password" class="form-control input-lg" placeholder="Password"
+                                       value="{{ old('password', null) }}">
                                 <span class="input-group-addon"><i class="fa fa-check"></i></span>
                             </div>
 

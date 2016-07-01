@@ -77,6 +77,7 @@ class UsersController extends Controller
     {
 
         $input["name"]     = $request->name;
+        $input["kana"]     = $request->kana;
         $input["email"]    = $request->email;
         $input["password"] = $request->password;
 
@@ -92,7 +93,8 @@ class UsersController extends Controller
 
                 return redirect('/admin/users/create/')
                   ->with('user', $this->user)
-                  ->with('errors', $errors);
+                  ->with('errors', $errors)
+                  ->withInput();
 
             }
 
@@ -158,6 +160,7 @@ class UsersController extends Controller
     {
 
         $input["name"]  = $request->name;
+        $input["kana"]  = $request->kana;
         $input["email"] = $request->email;
 
         $exception = DB::transaction(function () use ($input, $id) {
@@ -173,7 +176,8 @@ class UsersController extends Controller
 
                 return redirect($url)
                   ->with('user', $this->user)
-                  ->with('errors', $errors);
+                  ->with('errors', $errors)
+                  ->withInput();
 
             }
 

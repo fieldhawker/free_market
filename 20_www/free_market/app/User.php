@@ -154,6 +154,7 @@ class User extends Authenticatable
         if ($this->validate($data)) {
 
             $data["password"] = Hash::make($data["password"]);
+            $data["uid"]      = hash("sha256",uniqid(mt_rand(10,10), 1));
             $id               = DB::table('users')->insertGetId($data);
 
             return $id;
@@ -184,7 +185,7 @@ class User extends Authenticatable
             );
 
             return true;
-            
+
         } else {
 
             return false;

@@ -14,21 +14,27 @@ class UserTableSeeder extends Seeder
         DB::table('users')->truncate();
 
         DB::table('users')->insert([
-          'name' => 'テスト',
-          'email' => 'dev@se-project.co.jp',
+          'uid'      => hash("sha256",uniqid(mt_rand(10,10), 1)),
+          'name'     => 'テスト',
+          'kana'     => 'テスト',
+          'email'    => 'dev@se-project.co.jp',
           'password' => bcrypt('password'),
         ]);
 
         DB::table('users')->insert([
-          'name' => 'テスト2',
-          'email' => 'takano@se-project.co.jp',
+          'uid'      => hash("sha256",uniqid(mt_rand(10,10), 1)),
+          'name'     => 'テスト2',
+          'kana'     => 'テスト2',
+          'email'    => 'takano@se-project.co.jp',
           'password' => bcrypt('password'),
         ]);
 
         for ($i = 1; $i < 100; $i++) {
             DB::table('users')->insert([
-              'name' => 'テスト' . $i,
-              'email' => 'test' . $i . '@example.com',
+              'uid'      => hash("sha256",uniqid(mt_rand(10,10), 1)),
+              'name'     => 'テスト' . $i,
+              'kana'     => 'テスト' . $i,
+              'email'    => 'test' . $i . '@example.com',
               'password' => bcrypt('password'),
             ]);
         }
