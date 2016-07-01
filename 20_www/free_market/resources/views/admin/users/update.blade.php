@@ -11,7 +11,7 @@
         <h1>会員編集</h1>
         <!-- パンくず -->
         <ol class="breadcrumb">
-            <li><a href="">Home</a></li>
+            <li><a href="/admin/">Home</a></li>
             <li><a href="/admin/users">会員一覧</a></li>
             <li>会員編集</li>
         </ol>

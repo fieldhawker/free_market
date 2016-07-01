@@ -8,7 +8,6 @@ case $ANSWER in
     "Y" | "y" | "yes" | "Yes" | "YES" ) 
         echo "YES!!";
         
-        
         # vender系のインストール
         cd /usr/share/nginx/html/free_market
         composer install
@@ -21,6 +20,9 @@ case $ANSWER in
         # マイグレーション
         cd /usr/share/nginx/html/free_market
         php artisan migrate:refresh --seed
+        
+        # autoloadを更新
+        composer dump-autoload
 
         # シンボリックリンクの生成
         cd /usr/share/nginx/html/free_market/public

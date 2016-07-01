@@ -72,6 +72,8 @@
 
         Route::resource('/users', 'Admin\UsersController');
 
+        Route::resource('/ope', 'Admin\OperationLogsController');
+
     });
 
 //////////////////////////////////////////////////////////////////////

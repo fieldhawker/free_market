@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use DB;
 use Log;
+use Auth;
 //use Hash;
 use Input;
 use Session;
@@ -52,7 +53,7 @@ class UsersController extends Controller
     public function index()
     {
         $query = $this->user->query();
-        $users = $query->orderBy('id', 'asc')->get();
+        $users = $query->orderBy('id', 'desc')->get();
 
 //        $users = $query->orderBy('id','desc')->paginate(10);
 
@@ -100,7 +101,8 @@ class UsersController extends Controller
             $data = [
               'screen_number' => self::SCREEN_NUMBER_REGISTER,
               'target_id'     => $id,
-              'comment'       => 'コメント',
+              'operator'      => Auth::guard("admin")->user()->id,
+              'comment'       => json_encode($input, JSON_UNESCAPED_UNICODE),
             ];
 
             $id = $this->ope->registerGetId($data);
@@ -180,7 +182,8 @@ class UsersController extends Controller
             $data = [
               'screen_number' => self::SCREEN_NUMBER_UPDATE,
               'target_id'     => $id,
-              'comment'       => 'コメント',
+              'operator'      => Auth::guard("admin")->user()->id,
+              'comment'       => json_encode($input, JSON_UNESCAPED_UNICODE),
             ];
 
             $id = $this->ope->registerGetId($data);
@@ -218,7 +221,8 @@ class UsersController extends Controller
             $data = [
               'screen_number' => self::SCREEN_NUMBER_DELETE,
               'target_id'     => $id,
-              'comment'       => 'コメント',
+              'operator'      => Auth::guard("admin")->user()->id,
+              'comment'       => json_encode($user, JSON_UNESCAPED_UNICODE),
             ];
 
             $id = $this->ope->registerGetId($data);

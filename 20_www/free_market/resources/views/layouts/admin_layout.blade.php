@@ -24,16 +24,16 @@
                 </a>
 
                 <ul class="nav navbar-nav">
-                    <li><a href="">顧客管理</a></li>
-                    <li><a href="">売上管理</a></li>
+                    {{--<li><a href="">顧客管理</a></li>--}}
+                    {{--<li><a href="">売上管理</a></li>--}}
                     <!-- doropdown -->
-                    <li class="dropdown">
-                        <a href="" class="dropdown-toggle" data-toggle="dropdown">その他<span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="">その他１</a></li>
-                            <li><a href="">その他２</a></li>
-                        </ul>
-                    </li>
+                    {{--<li class="dropdown">--}}
+                        {{--<a href="" class="dropdown-toggle" data-toggle="dropdown">その他<span class="caret"></span></a>--}}
+                        {{--<ul class="dropdown-menu" role="menu">--}}
+                            {{--<li><a href="">その他１</a></li>--}}
+                            {{--<li><a href="">その他２</a></li>--}}
+                        {{--</ul>--}}
+                    {{--</li>--}}
                 </ul>
 
                 <!-- 右に寄せるメニュ :navbar-rightとかもあるが、マージが無い -->

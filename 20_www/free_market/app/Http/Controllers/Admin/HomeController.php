@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\User;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -13,12 +14,15 @@ use Illuminate\Http\Request;
 class HomeController extends Controller
 {
 
+    private $user;
+    
     /**
      * HomeController constructor.
      */
-    public function __construct()
+    public function __construct(User $user)
     {
         $this->middleware('auth:admin');
+        $this->user = $user;
     }
 
     /**
@@ -28,6 +32,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('admin.home');
+        $user_count = $this->user->count();
+
+        return view('admin.home')->with('user_count', $user_count);
     }
 }

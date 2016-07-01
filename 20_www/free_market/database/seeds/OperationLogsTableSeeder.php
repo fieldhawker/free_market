@@ -16,6 +16,7 @@ class OperationLogsTableSeeder extends Seeder
         DB::table('operation_logs')->insert([
           'screen_number' => 100,
           'target_id' => 100,
+          'operator' => 1,
           'comment' => 'コメント',
           'executed_at' => date("Y-m-d H:i:s"),
         ]);
@@ -24,6 +25,7 @@ class OperationLogsTableSeeder extends Seeder
             DB::table('operation_logs')->insert([
               'screen_number' => 100 + $i,
               'target_id' => 100 + $i,
+              'operator' => 1,
               'comment' => 'コメント' . $i,
               'executed_at' => date("Y-m-d H:i:s"),
             ]);

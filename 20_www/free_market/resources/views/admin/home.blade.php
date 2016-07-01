@@ -59,14 +59,14 @@
             <!-- small box -->
             <div class="small-box bg-yellow">
                 <div class="inner">
-                    <h3>44<sup style="font-size: 15px">人</sup></h3>
+                    <h3>{{$user_count}}<sup style="font-size: 15px">人</sup></h3>
 
                     <p>会員数</p>
                 </div>
                 <div class="icon">
                     <i class="ion ion-person-add"></i>
                 </div>
-                <a href="#" class="small-box-footer">
+                <a href="/admin/users/" class="small-box-footer">
                     More info <i class="fa fa-arrow-circle-right"></i>
                 </a>
             </div>

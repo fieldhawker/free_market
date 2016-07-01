@@ -11,7 +11,7 @@
         <h1>会員一覧</h1>
         <!-- パンくず -->
         <ol class="breadcrumb">
-            <li><a href="">Home</a></li>
+            <li><a href="/admin/">Home</a></li>
             <li>会員一覧</li>
         </ol>
     </section>
@@ -173,7 +173,9 @@
 
     <script>
         $(function () {
-            $("#example1").DataTable();
+            $("#example1").DataTable({
+                "aaSorting": [ [0,'desc'] ]
+            });
 //            $('#example1').DataTable({
 //                "paging": true,
 //                "lengthChange": true,

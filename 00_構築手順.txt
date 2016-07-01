@@ -124,6 +124,9 @@ php artisan make:seeder ExclusivesTableSeeder
 php artisan make:model OperationLogs
 php artisan make:model Exclusives
 
+## コントローラ作成
+php artisan make:controller PhotoController
+
 ===================================================
 
 ■ MACでの開発環境構築 (初回)
