@@ -81,4 +81,15 @@ class Handler extends ExceptionHandler
             method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500,
             method_exists($e, 'getHeaders') ? $e->getHeaders() : []
         );}
+
+    /**
+     * @param HttpException $e
+     *
+     * @return \Illuminate\Http\Response
+     */
+    protected function renderHttpException(HttpException $e)
+    {
+        $status = $e->getStatusCode();
+        return response()->view("errors.common", ['exception' => $e], $status);
+    }
 }

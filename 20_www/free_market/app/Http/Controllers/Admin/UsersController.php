@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use DB;
-use Hash;
+use Log;
+//use Hash;
 use Input;
 use Session;
+use OperationLogsClass;
 use App\User;
+//use App\OperationLogs;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -18,33 +21,27 @@ use Illuminate\Http\Request;
 class UsersController extends Controller
 {
 
-    /**
-     *
-     */
     const MESSAGE_REGISTER_END    = 'register';
-    /**
-     *
-     */
     const MESSAGE_UPDATE_END      = 'update';
-    /**
-     *
-     */
     const MESSAGE_DELETE_END      = 'delete';
-    /**
-     *
-     */
     const MESSAGE_NOT_FOUND_END   = 'not found';
-    /**
-     *
-     */
     const MESSAGE_VALID_ERROR_END = 'error';
+    const SCREEN_NUMBER_REGISTER  = 110;
+    const SCREEN_NUMBER_UPDATE    = 120;
+    const SCREEN_NUMBER_DELETE    = 130;
+
+    private $user;
+    private $ope;
 
     /**
      * UsersController constructor.
      */
-    public function __construct()
+    public function __construct(User $user, OperationLogsClass $ope)
     {
         $this->middleware('auth:admin');
+
+        $this->user = $user;
+        $this->ope  = $ope;
     }
 
     /**
@@ -54,7 +51,7 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $query = User::query();
+        $query = $this->user->query();
         $users = $query->orderBy('id', 'asc')->get();
 
 //        $users = $query->orderBy('id','desc')->paginate(10);
@@ -78,40 +75,57 @@ class UsersController extends Controller
     public function store(Request $request)
     {
 
-        $user = new USER();
-
         $input["name"]     = $request->name;
         $input["email"]    = $request->email;
         $input["password"] = $request->password;
 
-        if ($user->validate($input)) {
+        $exception = DB::transaction(function () use ($input) {
 
-            $id = $user->insertGetId($input);
+            $id = $this->user->registerGetId($input);
+
+            if ($id == false) {
+
+                $errors = $this->user->errors();
+
+                Session::flash('message', self::MESSAGE_VALID_ERROR_END);
+
+                return redirect('/admin/users/create/')
+                  ->with('user', $this->user)
+                  ->with('errors', $errors);
+
+            }
+
+            Log::info('会員が登録されました。', ['id' => $id]);
+
+            $data = [
+              'screen_number' => self::SCREEN_NUMBER_REGISTER,
+              'target_id'     => $id,
+              'comment'       => 'コメント',
+            ];
+
+            $id = $this->ope->registerGetId($data);
+
+            Log::info('操作ログが登録されました。', ['id' => $id]);
 
             Session::flash('message', self::MESSAGE_REGISTER_END);
 
             return redirect('/admin/users');
 
-        } else {
+        });
 
-            $errors = $user->errors();
-
-            Session::flash('message', self::MESSAGE_VALID_ERROR_END);
-
-            return redirect('/admin/users/create/')
-              ->with('user', $user)
-              ->with('errors', $errors);
-
-        }
+        return $exception;
 
     }
 
+
     /**
      * @param $id
+     *
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function show($id)
     {
-        //
+        return redirect('/admin/users');
     }
 
     /**
@@ -124,7 +138,7 @@ class UsersController extends Controller
     {
 
         //レコードを検索
-        $user = User::findOrFail($id);
+        $user = $this->user->findOrFail($id);
 
         //検索結果をビューに渡す
         return view('admin.users.update')
@@ -140,30 +154,46 @@ class UsersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $user = new User();
 
         $input["name"]  = $request->name;
         $input["email"] = $request->email;
 
-        if ($user->validate($input, $id)) {
+        $exception = DB::transaction(function () use ($input, $id) {
 
-            $user->update_users($input, $id);
+            $result = $this->user->updateUsers($input, $id);
+
+            if ($result == false) {
+
+                $errors = $this->user->errors();
+                $url    = sprintf('/admin/users/%s/edit/', $id);
+
+                Session::flash('message', self::MESSAGE_VALID_ERROR_END);
+
+                return redirect($url)
+                  ->with('user', $this->user)
+                  ->with('errors', $errors);
+
+            }
+
+            Log::info('会員が更新されました。', ['id' => $id]);
+
+            $data = [
+              'screen_number' => self::SCREEN_NUMBER_UPDATE,
+              'target_id'     => $id,
+              'comment'       => 'コメント',
+            ];
+
+            $id = $this->ope->registerGetId($data);
+
+            Log::info('操作ログが登録されました。', ['id' => $id]);
 
             Session::flash('message', self::MESSAGE_UPDATE_END);
 
             return redirect('/admin/users');
 
-        } else {
+        });
 
-            $errors = $user->errors();
-
-            Session::flash('message', self::MESSAGE_VALID_ERROR_END);
-
-            return redirect('/admin/users/' . $id . '/edit/')
-              ->with('user', $user)
-              ->with('errors', $errors);
-
-        }
+        return $exception;
 
     }
 
@@ -174,11 +204,32 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
-        // 削除対象レコードを検索
-        $user = User::find($id);
-        // 論理削除
-        $user->delete();
 
-        return redirect()->to('/admin/users')->with('message', self::MESSAGE_DELETE_END);
+        $exception = DB::transaction(function () use ($id) {
+
+            // 削除対象レコードを検索
+            $user = $this->user->find($id);
+
+            // 論理削除
+            $user->delete();
+
+            Log::info('会員が削除されました。', ['id' => $id]);
+
+            $data = [
+              'screen_number' => self::SCREEN_NUMBER_DELETE,
+              'target_id'     => $id,
+              'comment'       => 'コメント',
+            ];
+
+            $id = $this->ope->registerGetId($data);
+
+            Log::info('操作ログが登録されました。', ['id' => $id]);
+
+            return redirect()->to('/admin/users')->with('message', self::MESSAGE_DELETE_END);
+
+        });
+
+        return $exception;
+
     }
 }

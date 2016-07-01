@@ -75,40 +75,40 @@ class User extends Authenticatable
      */
     private $errors;
 
-    /**
-     *
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        self::creating(function ($user) {
-            $user->onCreatingHandler();
-        });
-        self::updating(function ($user) {
-            return $user->onUpdatingHandler();
-        });
-    }
-
-
-    /**
-     * @return bool
-     */
-    private function onCreatingHandler()
-    {
-        //update時刻を記録したり何かする
-        return true; //キャンセルしたいときはfalseを返す
-    }
-
-
-    /**
-     * @return bool
-     */
-    private function onUpdatingHandler()
-    {
-        //update時刻を記録したり何かする
-        return true; //キャンセルしたいときはfalseを返す
-    }
+//    /**
+//     *
+//     */
+//    protected static function boot()
+//    {
+//        parent::boot();
+//
+//        self::creating(function ($user) {
+//            $user->onCreatingHandler();
+//        });
+//        self::updating(function ($user) {
+//            return $user->onUpdatingHandler();
+//        });
+//    }
+//
+//
+//    /**
+//     * @return bool
+//     */
+//    private function onCreatingHandler()
+//    {
+//        //update時刻を記録したり何かする
+//        return true; //キャンセルしたいときはfalseを返す
+//    }
+//
+//
+//    /**
+//     * @return bool
+//     */
+//    private function onUpdatingHandler()
+//    {
+//        //update時刻を記録したり何かする
+//        return true; //キャンセルしたいときはfalseを返す
+//    }
 
     /**
      * @param        $data
@@ -142,34 +142,40 @@ class User extends Authenticatable
         return $this->errors;
     }
 
+
     /**
      * @param $data
+     *
+     * @return null
      */
     public function registerGetId($data)
     {
 
-        DB::transaction(function () use ($data) {
+        if ($this->validate($data)) {
 
-            // インサート処理
-            $id = DB::table('users')->insertGetId(
-              ['name' => $data->name],
-              ['email' => $data->email],
-              ['password' => Hash::make($data->password)]
-            );
+            $data["password"] = Hash::make($data["password"]);
+            $id               = DB::table('users')->insertGetId($data);
 
             return $id;
-        });
 
+        } else {
+
+            return false;
+
+        }
     }
+
 
     /**
      * @param $data
      * @param $id
+     *
+     * @return bool
      */
-    public function update_users($data, $id)
+    public function updateUsers($data, $id)
     {
 
-        DB::transaction(function () use ($data, $id) {
+        if ($this->validate($data, $id)) {
 
             // アップデート処理
             User::where('id', '=', $id)->update(
@@ -178,7 +184,12 @@ class User extends Authenticatable
             );
 
             return true;
-        });
+            
+        } else {
+
+            return false;
+
+        }
 
     }
 }
