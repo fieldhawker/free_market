@@ -18,6 +18,12 @@ class AdminTableSeeder extends Seeder
           'email' => 'dev@se-project.co.jp',
           'password' => bcrypt('password'),
         ]);
+
+        DB::table('admins')->insert([
+          'name' => 'テスト2',
+          'email' => 'takano@se-project.co.jp',
+          'password' => bcrypt('password'),
+        ]);
         
 //        for ($i = 1; $i < 100; $i++) {
 //            DB::table('admins')->insert([

@@ -13,12 +13,12 @@ class ExclusivesTableSeeder extends Seeder
     {
         DB::table('exclusives')->truncate();
 
-        DB::table('exclusives')->insert([
-          'screen_number' => 100,
-          'target_id' => 100,
-          'admin_id' => 100,
-          'expired_at' => date("Y-m-d H:i:s"),
-          'comment' => 'サンプル',
-        ]);
+//        DB::table('exclusives')->insert([
+//          'screen_number' => 100,
+//          'target_id' => 100,
+//          'operator' => 100,
+//          'expired_at' => date("Y-m-d H:i:s"),
+//          'comment' => 'サンプル',
+//        ]);
     }
 }

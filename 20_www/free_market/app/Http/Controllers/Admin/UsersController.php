@@ -10,6 +10,8 @@ use Input;
 use Session;
 use OperationLogsClass;
 use App\User;
+use Config;
+use App\Exclusives;
 //use App\OperationLogs;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -27,22 +29,25 @@ class UsersController extends Controller
     const MESSAGE_DELETE_END      = 'delete';
     const MESSAGE_NOT_FOUND_END   = 'not found';
     const MESSAGE_VALID_ERROR_END = 'error';
+    const MESSAGE_MODIFIED_END    = 'modified';
     const SCREEN_NUMBER_REGISTER  = 110;
     const SCREEN_NUMBER_UPDATE    = 120;
     const SCREEN_NUMBER_DELETE    = 130;
 
     private $user;
     private $ope;
+    private $exclusives;
 
     /**
      * UsersController constructor.
      */
-    public function __construct(User $user, OperationLogsClass $ope)
+    public function __construct(User $user, OperationLogsClass $ope, Exclusives $exclusives)
     {
         $this->middleware('auth:admin');
 
-        $this->user = $user;
-        $this->ope  = $ope;
+        $this->user       = $user;
+        $this->ope        = $ope;
+        $this->exclusives = $exclusives;
     }
 
     /**
@@ -141,12 +146,37 @@ class UsersController extends Controller
     public function edit(Request $request, $id)
     {
 
-        //レコードを検索
+        // レコードを検索
+
         $user = $this->user->findOrFail($id);
+
+        if (!$user) {
+            return redirect('/admin/users');
+        }
+
+        // 他の管理者が編集中か
+
+        $data = [
+          'screen_number' => self::SCREEN_NUMBER_UPDATE,
+          'target_id'     => $id,
+          'operator'      => Auth::guard("admin")->user()->id,
+        ];
+
+        $is_exclusives = $this->exclusives->isExpiredByOtherAdmin($data);
+
+        if (!$is_exclusives) {
+
+            // 編集中にする
+
+            $data["expired_at"] = date("Y/m/d H:i:s", strtotime(Config::get('const.exclusives_time')));
+            $exclusives_id      = $this->exclusives->insertGetId($data);
+
+        }
 
         //検索結果をビューに渡す
         return view('admin.users.update')
-          ->with('user', $user);
+          ->with('user', $user)
+          ->with('is_exclusives', $is_exclusives);
 
     }
 
@@ -165,6 +195,42 @@ class UsersController extends Controller
 
         $exception = DB::transaction(function () use ($input, $id) {
 
+            // 他の管理者が編集中か
+
+            $exclusives = [
+              'screen_number' => self::SCREEN_NUMBER_UPDATE,
+              'target_id'     => $id,
+              'operator'      => Auth::guard("admin")->user()->id,
+            ];
+
+            $is_exclusives = $this->exclusives->isExpiredByOtherAdmin($exclusives);
+
+            if ($is_exclusives) {
+
+                $url = sprintf('/admin/users/%s/edit/', $id);
+
+                Session::flash('message', self::MESSAGE_VALID_ERROR_END);
+
+                return redirect($url)
+                  ->with('user', $this->user)
+                  ->withInput();
+
+            }
+
+            // 存在チェック
+            
+            $user = $this->user->find($id);
+
+            if (!$user) {
+
+                Session::flash('message', self::MESSAGE_NOT_FOUND_END);
+
+                return redirect('/admin/users/');
+
+            }
+            
+            // 更新を開始
+
             $result = $this->user->updateUsers($input, $id);
 
             if ($result == false) {
@@ -182,6 +248,12 @@ class UsersController extends Controller
             }
 
             Log::info('会員が更新されました。', ['id' => $id]);
+
+            // 排他制御を削除
+
+            $result = $this->exclusives->deleteExpiredByMine($exclusives);
+
+            // 操作ログを記録
 
             $data = [
               'screen_number' => self::SCREEN_NUMBER_UPDATE,
@@ -213,6 +285,24 @@ class UsersController extends Controller
     {
 
         $exception = DB::transaction(function () use ($id) {
+
+            // 他の管理者が編集中か
+
+            $exclusives = [
+              'screen_number' => self::SCREEN_NUMBER_UPDATE,
+              'target_id'     => $id,
+              'operator'      => Auth::guard("admin")->user()->id,
+            ];
+
+            $is_exclusives = $this->exclusives->isExpiredByOtherAdmin($exclusives);
+
+            if ($is_exclusives) {
+
+                Session::flash('message', self::MESSAGE_MODIFIED_END);
+
+                return redirect('/admin/users/');
+
+            }
 
             // 削除対象レコードを検索
             $user = $this->user->find($id);

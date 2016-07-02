@@ -16,7 +16,7 @@ class CreateExclusivesTable extends Migration
             $table->increments('id');
             $table->integer('screen_number');
             $table->integer('target_id');
-            $table->integer('admin_id');
+            $table->integer('operator');
             $table->timestamp('expired_at');
             $table->string('comment');
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));

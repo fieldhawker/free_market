@@ -48,6 +48,14 @@
                                     <div class="alert alert-info">削除が完了しました。</div>
                                     @endif
 
+                                    @if (Session::get('message') == 'modified')
+                                        <div class="alert alert-info">別の管理者が編集中です。</div>
+                                    @endif
+
+                                    @if (Session::get('message') == 'not found')
+                                        <div class="alert alert-info">対象が存在しませんでした。</div>
+                                    @endif
+
                             @endif
 
 

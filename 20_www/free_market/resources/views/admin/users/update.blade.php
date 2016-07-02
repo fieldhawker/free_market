@@ -36,6 +36,10 @@
                     <!-- form start -->
                     <form role="form" method="POST" action="/admin/users/{{$user->id}}">
                         <div class="box-body">
+
+                            @if ($is_exclusives)
+                                <div class="alert alert-info">別の管理者が編集中です。</div>
+                            @endif
                             
                             @if (Session::has('message'))
 
@@ -81,12 +85,14 @@
                         </div>
                         <!-- /.box-body -->
 
+                        @if (!$is_exclusives)
                         <input type="hidden" name="_token" value="{{csrf_token()}}">
                         <input type="hidden" name="_method" value="PUT">
 
                         <div class="box-footer">
                             <button type="submit" class="btn btn-block btn-success btn-lg">編集</button>
                         </div>
+                        @endif
                     </form>
                 </div>
                 <!-- /.box -->
