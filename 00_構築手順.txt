@@ -76,6 +76,9 @@ vendor/bin/phpcs --standard=phpcs.xml --extensions=php .
 ## phpmd
 vendor/bin/phpmd . text ruleset.xml --suffixes php --exclude node_modules,resources,storage,vendor
 
+## phpdoc (-d:ディレクトリ -f:ファイル)
+vendor/bin/phpdoc run -d app/ -t out --template=clean
+
 ## 管理画面テンプレート
 https://almsaeedstudio.com/themes/AdminLTE/index2.html
 

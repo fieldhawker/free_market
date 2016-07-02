@@ -18,7 +18,8 @@
         "phpmd/phpmd" : "*",
         "filp/whoops": "2.*",
         "barryvdh/laravel-debugbar": "2.*",
-        "almasaeed2010/adminlte": "2.*"
+        "almasaeed2010/adminlte": "2.*",
+        "phpdocumentor/phpdocumentor": "2.*"
     },
     "autoload": {
         "classmap": [
