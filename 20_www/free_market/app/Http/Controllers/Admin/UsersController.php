@@ -130,11 +130,22 @@ class UsersController extends Controller
     /**
      * @param $id
      *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function show($id)
     {
-        return redirect('/admin/users');
+
+        // レコードを検索
+
+        $user = $this->user->findOrFail($id);
+
+        if (!$user) {
+            return redirect('/admin/users');
+        }
+        
+        //検索結果をビューに渡す
+        return view('admin.users.show')
+          ->with('user', $user);
     }
 
     /**

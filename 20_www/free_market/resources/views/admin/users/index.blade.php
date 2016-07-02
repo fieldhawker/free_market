@@ -99,6 +99,11 @@
                                         aria-label="Engine version: activate to sort column ascending"
                                         style="width: 20px;">
                                     </th>
+                                    <th class="sorting" tabindex="0" aria-controls="listTable" rowspan="1"
+                                        colspan="1"
+                                        aria-label="Engine version: activate to sort column ascending"
+                                        style="width: 20px;">
+                                    </th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -114,6 +119,10 @@
                                             <td>{{$user->email}}</td>
                                             <td>{{$user->created_at}}</td>
                                             <td>{{$user->updated_at}}</td>
+                                            <td class="text-center">
+                                                <a href="/admin/users/{{$user->id}}"
+                                                   class="btn btn-info btn-sm">詳細</a>
+                                            </td>
                                             <td class="text-center">
                                                 <a href="/admin/users/{{$user->id}}/edit/"
                                                    class="btn btn-primary btn-sm">編集</a>
@@ -138,6 +147,7 @@
                                     <th rowspan="1" colspan="1">メールアドレス</th>
                                     <th rowspan="1" colspan="1">登録日時</th>
                                     <th rowspan="1" colspan="1">更新日時</th>
+                                    <th rowspan="1" colspan="1"></th>
                                     <th rowspan="1" colspan="1"></th>
                                     <th rowspan="1" colspan="1"></th>
                                 </tr>

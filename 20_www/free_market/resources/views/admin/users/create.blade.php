@@ -89,7 +89,10 @@
                         <input type="hidden" name="_token" value="{{csrf_token()}}">
 
                         <div class="box-footer">
-                            <button type="submit" class="btn btn-block btn-success btn-lg">登録</button>
+                            <a href="/admin/users/">
+                                <button type="button" class="btn btn-default btn-lg">戻る</button>
+                            </a>
+                            <button type="submit" class="btn btn-success btn-lg">登録</button>
                         </div>
                     </form>
                 </div>

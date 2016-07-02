@@ -90,7 +90,10 @@
                         <input type="hidden" name="_method" value="PUT">
 
                         <div class="box-footer">
-                            <button type="submit" class="btn btn-block btn-success btn-lg">編集</button>
+                            <a href="/admin/users/">
+                                <button type="button" class="btn btn-default btn-lg">戻る</button>
+                            </a>
+                            <button type="submit" class="btn btn-success btn-lg">編集</button>
                         </div>
                         @endif
                     </form>
