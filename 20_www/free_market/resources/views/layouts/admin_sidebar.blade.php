@@ -18,6 +18,7 @@
                 </ul>
             </li>
             <li><a href="/admin/ope"><i class="fa fa-circle-o"></i>操作ログ</a>
+            <li><a href="/admin/exc"><i class="fa fa-circle-o"></i>排他制御</a>
         </ul>
 
     </section>

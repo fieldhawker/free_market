@@ -75,7 +75,7 @@
                                         <tr role="row" class="odd">
                                     @endif
                                             <td>{{$operation_log->id}}</td>
-                                            <td>{{\Config::get('screen.'.$operation_log->screen_number)}}</td>
+                                            <td>{{\Config::get('screen.message.'.$operation_log->screen_number)}}</td>
                                             <td>{{$operation_log->target_id}}</td>
                                             <td>{{$operation_log->executed_at}}</td>
                                             <td style="word-break: break-all;">{{$operation_log->comment}}</td>

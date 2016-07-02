@@ -128,7 +128,7 @@ php artisan make:model OperationLogs
 php artisan make:model Exclusives
 
 ## コントローラ作成
-php artisan make:controller PhotoController
+php artisan make:controller ExclusivesController
 
 ===================================================
 

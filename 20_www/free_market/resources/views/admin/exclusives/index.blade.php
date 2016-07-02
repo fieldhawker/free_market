@@ -1,18 +1,18 @@
 @extends('layouts.admin_layout')
 
 @section('title')
-    会員画面 一覧
+    排他制御 一覧
     @stop
 
     @section('content')
 
             <!-- コンテンツヘッダ -->
     <section class="content-header">
-        <h1>会員一覧</h1>
+        <h1>排他制御一覧</h1>
         <!-- パンくず -->
         <ol class="breadcrumb">
             <li><a href="/admin/">Home</a></li>
-            <li>会員一覧</li>
+            <li>排他制御一覧</li>
         </ol>
     </section>
 
@@ -26,42 +26,20 @@
 
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title">会員を一覧表示します</h3>
+                        <h3 class="box-title">排他制御を一覧表示します</h3>
                     </div>
 
                                 <!-- /.box-header -->
                         <div class="box-body">
                             
-
-                            
                             @if (Session::has('message'))
-
-                                    @if (Session::get('message') == 'register')
-                                    <div class="alert alert-info">登録が完了しました。</div>
-                                    @endif
-
-                                    @if (Session::get('message') == 'update')
-                                    <div class="alert alert-info">編集が完了しました。</div>
-                                    @endif
 
                                     @if (Session::get('message') == 'delete')
                                     <div class="alert alert-info">削除が完了しました。</div>
                                     @endif
 
-                                    @if (Session::get('message') == 'modified')
-                                        <div class="alert alert-info">別の管理者が編集中です。</div>
-                                    @endif
-
-                                    @if (Session::get('message') == 'not found')
-                                        <div class="alert alert-info">対象が存在しませんでした。</div>
-                                    @endif
-
                             @endif
 
-
-                            {{--<div id="listTable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">--}}
-                            {{--<div class="row">--}}
-                            {{--<div class="col-sm-12">--}}
                             <table id="listTable" class="table table-bordered table-striped dataTable"
                                    role="grid" aria-describedby="listTable_info">
                                 <thead>
@@ -73,26 +51,21 @@
                                     </th>
                                     <th class="sorting" tabindex="0" aria-controls="listTable" rowspan="1"
                                         colspan="1" aria-label="Browser: activate to sort column ascending"
-                                        style="width: 202px;">名前
+                                        style="width: 202px;">画面名
                                     </th>
                                     <th class="sorting" tabindex="0" aria-controls="listTable" rowspan="1"
                                         colspan="1" aria-label="Platform(s): activate to sort column ascending"
-                                        style="width: 178px;">メールアドレス
+                                        style="width: 178px;">対象ID
                                     </th>
                                     <th class="sorting" tabindex="0" aria-controls="listTable" rowspan="1"
                                         colspan="1"
                                         aria-label="Engine version: activate to sort column ascending"
-                                        style="width: 138px;">登録日時
+                                        style="width: 138px;">管理者
                                     </th>
                                     <th class="sorting" tabindex="0" aria-controls="listTable" rowspan="1"
                                         colspan="1"
                                         aria-label="Engine version: activate to sort column ascending"
-                                        style="width: 138px;">更新日時
-                                    </th>
-                                    <th class="sorting" tabindex="0" aria-controls="listTable" rowspan="1"
-                                        colspan="1"
-                                        aria-label="Engine version: activate to sort column ascending"
-                                        style="width: 20px;">
+                                        style="width: 138px;">有効期限
                                     </th>
                                     <th class="sorting" tabindex="0" aria-controls="listTable" rowspan="1"
                                         colspan="1"
@@ -103,28 +76,24 @@
                                 </thead>
                                 <tbody>
                                 {{--*/ $even = true /*--}}
-                                @foreach($users as $user)
+                                @foreach($exclusives as $exclusive)
                                     @if ($even)
                                         <tr role="row" class="even">
                                     @else
                                         <tr role="row" class="odd">
                                             @endif
-                                            <td>{{$user->id}}</td>
-                                            <td>{{$user->name}}</td>
-                                            <td>{{$user->email}}</td>
-                                            <td>{{$user->created_at}}</td>
-                                            <td>{{$user->updated_at}}</td>
+                                            <td>{{$exclusive->id}}</td>
+                                            <td>{{\Config::get('screen.name.'.$exclusive->screen_number)}}</td>
+                                            <td>{{$exclusive->target_id}}</td>
+                                            <td>{{$exclusive->name}}</td>
+                                            <td>{{$exclusive->expired_at}}</td>
                                             <td class="text-center">
-                                                <a href="/admin/users/{{$user->id}}/edit/"
-                                                   class="btn btn-primary btn-sm">編集</a>
-                                            </td>
-                                            <td class="text-center">
-                                                <form method="POST" action="/admin/users/{{$user->id}}">
+                                                <form method="POST" action="/admin/exc/{{$exclusive->id}}">
                                                     <input type="hidden" name="_method" value="delete">
                                                     <input type="hidden" name="_token" value="{{csrf_token()}}">
                                                     <input type="submit" value="削除"
                                                            class="btn btn-danger btn-sm btn-destroy"
-                                                           onclick='return confirm("ID:{{$user->id}}を削除してよろしいですか？");'>
+                                                           onclick='return confirm("ID:{{$exclusive->id}}を削除してよろしいですか？");'>
                                                 </form>
                                             </td>
                                         </tr>
@@ -134,25 +103,19 @@
                                 <tfoot>
                                 <tr>
                                     <th rowspan="1" colspan="1">ID</th>
-                                    <th rowspan="1" colspan="1">名前</th>
-                                    <th rowspan="1" colspan="1">メールアドレス</th>
-                                    <th rowspan="1" colspan="1">登録日時</th>
-                                    <th rowspan="1" colspan="1">更新日時</th>
-                                    <th rowspan="1" colspan="1"></th>
+                                    <th rowspan="1" colspan="1">画面名</th>
+                                    <th rowspan="1" colspan="1">対象ID</th>
+                                    <th rowspan="1" colspan="1">管理者</th>
+                                    <th rowspan="1" colspan="1">有効期限</th>
                                     <th rowspan="1" colspan="1"></th>
                                 </tr>
                                 </tfoot>
                             </table>
-                            {{--</div>--}}
-                            {{--</div>--}}
-
-                            {{--</div>--}}
                         </div>
                         <!-- /.box-body -->
                 </div>
                 <!-- /.box -->
             </div>
-
 
         </div><!-- end row -->
 
@@ -184,14 +147,6 @@
             $("#listTable").DataTable({
                 "aaSorting": [ [0,'desc'] ]
             });
-//            $('#listTable').DataTable({
-//                "paging": true,
-//                "lengthChange": true,
-//                "searching": true,
-//                "ordering": true,
-//                "info": false,
-//                "autoWidth": true
-//            });
         });
     </script>
 
