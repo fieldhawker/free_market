@@ -29,6 +29,7 @@ case $ANSWER in
         ln -s ../vendor/almasaeed2010/adminlte/dist/ dist
         ln -s ../vendor/almasaeed2010/adminlte/bootstrap/ bootstrap
         ln -s ../vendor/almasaeed2010/adminlte/plugins/ plugins
+        ln -s /usr/share/phpMyAdmin/ phpmyadmin
 
         ;;
 

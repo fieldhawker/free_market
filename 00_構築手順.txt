@@ -49,6 +49,9 @@ cd /usr/share/nginx/html/
 http://192.168.33.10/users/
 http://192.168.33.10/admin/
 
+# phpmyadmin
+http://192.168.33.10/phpmyadmin/
+
 # API
 http://192.168.33.10/api/users  ※要管理者ログイン
 
@@ -62,10 +65,17 @@ pass : password
 mail : dev@se-project.co.jp
 pass : password
 
+# DB
+database : market
+user : market
+pass : maria
+
+
 # テスト自動化
 
 ## API
 ./vendor/bin/phpunit tests/api
+./vendor/bin/phpunit tests/admin/model
 
 
 # 便利ツール

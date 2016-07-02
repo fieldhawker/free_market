@@ -70,7 +70,7 @@ class AuthController extends Controller
     protected function create(array $data)
     {
         return User::create([
-          'uid'      => hash("sha256", uniqid(mt_rand(10, 10), 1)),
+          'uid'      => hash("sha256", uniqid(mt_rand(), 1)),
           'name'     => $data['name'],
           'kana'     => $data['kana'],
           'email'    => $data['email'],

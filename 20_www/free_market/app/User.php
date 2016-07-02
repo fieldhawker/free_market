@@ -157,7 +157,7 @@ class User extends Authenticatable
         if ($this->validate($data)) {
 
             $data["password"] = Hash::make($data["password"]);
-            $data["uid"]      = hash("sha256", uniqid(mt_rand(10, 10), 1));
+            $data["uid"]      = hash("sha256", uniqid(mt_rand(), 1));
             $id               = DB::table('users')->insertGetId($data);
 
             return $id;
@@ -184,6 +184,7 @@ class User extends Authenticatable
             // アップデート処理
             User::where('id', '=', $id)->update(
               ['name' => $data["name"]],
+              ['kana' => $data["kana"]],
               ['email' => $data["email"]]
             );
 
