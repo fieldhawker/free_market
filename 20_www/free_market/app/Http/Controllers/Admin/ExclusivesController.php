@@ -42,6 +42,7 @@ class ExclusivesController extends Controller
         $query = $this->exclusives->query();
         $exclusives = $query
           ->join('users', 'exclusives.operator', '=', 'users.id')
+          ->where('exclusives.expired_at', '>', date('Y/m/d H:i:s'))
           ->orderBy('id', 'desc')
           ->select('exclusives.*', 'users.name')
           ->get();
