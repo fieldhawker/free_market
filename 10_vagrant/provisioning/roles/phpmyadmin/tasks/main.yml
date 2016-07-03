@@ -1,0 +1,13 @@
+#- name: epel-release インストール
+#  yum: name=epel-release state=latest
+#  tags:
+#    - phpmyadmin
+- name: phpmyadmin インストール
+  yum: name=phpmyadmin state=latest enablerepo=remi-php70
+  tags:
+    - phpmyadmin
+    
+- name: chown session
+  shell: chown -R root.vagrant /var/lib/php/session
+  tags:
+    - phpmyadmin

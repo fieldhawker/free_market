@@ -75,7 +75,7 @@ pass : maria
 
 ## API
 ./vendor/bin/phpunit tests/api
-./vendor/bin/phpunit tests/admin/model
+./vendor/bin/phpunit tests/admin/model --stop-on-failure
 
 
 # 便利ツール

@@ -26,10 +26,10 @@ case $ANSWER in
 
         # シンボリックリンクの生成
         cd /usr/share/nginx/html/free_market/public
-        ln -s ../vendor/almasaeed2010/adminlte/dist/ dist
-        ln -s ../vendor/almasaeed2010/adminlte/bootstrap/ bootstrap
-        ln -s ../vendor/almasaeed2010/adminlte/plugins/ plugins
-        ln -s /usr/share/phpMyAdmin/ phpmyadmin
+        ln -s -f ../vendor/almasaeed2010/adminlte/dist/ dist
+        ln -s -f ../vendor/almasaeed2010/adminlte/bootstrap/ bootstrap
+        ln -s -f ../vendor/almasaeed2010/adminlte/plugins/ plugins
+        ln -s -f /usr/share/phpMyAdmin/ phpmyadmin
 
         ;;
 
