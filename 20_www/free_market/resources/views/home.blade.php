@@ -39,7 +39,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">フリマ！</a>
+            <a class="navbar-brand" href="#">SEP free market! SEPima!</a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -66,7 +66,7 @@
     <div class="row">
 
         <div class="col-md-3">
-            <p class="lead">フリマ！</p>
+            <p class="lead" style="font-family: 'Shojumaru', cursive, Arial, serif;">SEPima！</p>
             <div class="list-group">
                 <a href="#" class="list-group-item">プラモデル</a>
                 <a href="#" class="list-group-item">雑貨</a>
