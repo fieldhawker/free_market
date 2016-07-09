@@ -36,10 +36,10 @@ class OperationLogsController extends Controller
     {
         $query          = $this->ope->query();
         $operation_logs = $query
-          ->join('users', 'operation_logs.operator', '=', 'users.id')
+          ->join('admins', 'operation_logs.operator', '=', 'admins.id')
           ->orderBy('operation_logs.id', 'desc')
-          ->select('operation_logs.*', 'users.name')
-          ->get();
+          ->select('operation_logs.*', 'admins.name')
+          ->take(1000)->get();
 
         return view('admin.operationLogs.index')->with('operation_logs', $operation_logs);
     }

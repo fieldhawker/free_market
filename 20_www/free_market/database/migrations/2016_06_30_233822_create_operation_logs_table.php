@@ -17,7 +17,7 @@ class CreateOperationLogsTable extends Migration
             $table->integer('screen_number');
             $table->integer('target_id');
             $table->integer('operator');
-            $table->string('comment');
+            $table->text('comment');
             $table->timestamp('executed_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));

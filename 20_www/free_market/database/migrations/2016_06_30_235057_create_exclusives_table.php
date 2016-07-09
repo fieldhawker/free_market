@@ -18,7 +18,7 @@ class CreateExclusivesTable extends Migration
             $table->integer('target_id');
             $table->integer('operator');
             $table->timestamp('expired_at');
-            $table->string('comment');
+            $table->text('comment');
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
         });

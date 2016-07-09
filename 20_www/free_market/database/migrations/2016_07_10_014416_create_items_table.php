@@ -17,7 +17,7 @@ class CreateItemsTable extends Migration
             $table->integer('user_id');
             $table->string('name');
             $table->integer('price');
-            $table->string('caption');
+            $table->text('caption');
             $table->integer('status');
             $table->integer('items_status');
             $table->timestamp('started_at');
@@ -26,7 +26,7 @@ class CreateItemsTable extends Migration
             $table->integer('delivery_plan');
             $table->integer('pref');
             $table->integer('delivery_date');
-            $table->string('comment');
+            $table->text('comment');
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
             $table->softDeletes();
