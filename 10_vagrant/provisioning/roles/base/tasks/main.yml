@@ -2,6 +2,16 @@
 - name: Setting timezone
   command: timedatectl set-timezone {{ base_timezone }}
 
+- name: set locale
+  lineinfile: >
+    dest=/etc/yum/pluginconf.d/fastestmirror.conf
+    line='include_only=.jp'
+    
+- name: set prefer
+  lineinfile: >
+    dest=/etc/yum/pluginconf.d/fastestmirror.conf
+    line='prefer=ftp.iij.ad.jp'
+      
 - name: Update OS
   shell: "yum -y update"
 

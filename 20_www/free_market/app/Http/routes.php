@@ -76,6 +76,7 @@
         Route::resource('/ope', 'Admin\OperationLogsController');
 
         Route::resource('/exc', 'Admin\ExclusivesController');
+        Route::resource('/items', 'Admin\ItemsController');
 
     });
 
