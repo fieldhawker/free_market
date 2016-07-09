@@ -12,20 +12,20 @@ class UserTableSeeder extends Seeder
     public function run()
     {
         DB::table('users')->truncate();
-
+        
+        DB::table('users')->insert([
+          'uid'      => hash("sha256",uniqid(mt_rand(10,10), 1)),
+          'name'     => '公式アカウント',
+          'kana'     => 'コウシキアカウント',
+          'email'    => 'takano@se-project.co.jp',
+          'password' => bcrypt('sepadmin'),
+        ]);
+        
         DB::table('users')->insert([
           'uid'      => hash("sha256",uniqid(mt_rand(10,10), 1)),
           'name'     => 'テスト',
           'kana'     => 'テスト',
           'email'    => 'dev@se-project.co.jp',
-          'password' => bcrypt('password'),
-        ]);
-
-        DB::table('users')->insert([
-          'uid'      => hash("sha256",uniqid(mt_rand(10,10), 1)),
-          'name'     => 'テスト2',
-          'kana'     => 'テスト2',
-          'email'    => 'takano@se-project.co.jp',
           'password' => bcrypt('password'),
         ]);
 

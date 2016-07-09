@@ -41,9 +41,10 @@
         $this->post('/password/email', 'UsersAuth\PasswordController@sendResetLinkEmail');
         $this->post('/password/reset', 'UsersAuth\PasswordController@reset');
 
-        Route::get('/', 'UsersHomeController@index');
-        Route::get('/home', 'UsersHomeController@index');
-
+//        Route::get('/', 'UsersHomeController@index');
+//        Route::get('/home', 'UsersHomeController@index');
+        Route::get('/', 'HomeController@index');
+        Route::get('/home', 'HomeController@index');
     });
 
 //////////////////////////////////////////////////////////////////////
