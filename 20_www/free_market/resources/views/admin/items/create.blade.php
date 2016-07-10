@@ -53,7 +53,7 @@
 
                             <h4>名前</h4>
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                <span class="input-group-addon"><i class="fa fa-cube"></i></span>
                                 <input type="text" name="name" class="form-control input-lg" placeholder="商品の名前"
                                        value="{{ old('name', null) }}">
                                 <span class="input-group-addon"><i class="fa fa-check"></i></span>
@@ -61,7 +61,7 @@
 
                             <h4>価格</h4>
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                <span class="input-group-addon"><i class="fa fa-cube"></i></span>
                                 <input type="text" name="price" class="form-control input-lg" placeholder="100"
                                        value="{{ old('price', null) }}">
                                 <span class="input-group-addon"><i class="fa fa-check"></i></span>
@@ -69,15 +69,15 @@
 
                             <h4>説明</h4>
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
-                                <input type="text" name="caption" class="form-control input-lg" placeholder="商品の説明"
-                                       value="{{ old('caption', null) }}">
+                                <span class="input-group-addon"><i class="fa fa-cube"></i></span>
+                                <textarea class="form-control" name="caption" rows="3" placeholder="商品の説明"
+                                >{{ old('caption', null) }}</textarea>
                                 <span class="input-group-addon"><i class="fa fa-check"></i></span>
                             </div>
 
                             <h4>状態</h4>
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-unlock-alt"></i></span>
+                                <span class="input-group-addon"><i class="fa fa-cube"></i></span>
 
                                 <select class="form-control" name="status">
 
@@ -91,7 +91,7 @@
 
                             <h4>商品の状態</h4>
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-unlock-alt"></i></span>
+                                <span class="input-group-addon"><i class="fa fa-cube"></i></span>
 
                                 <select class="form-control" name="items_status">
 
@@ -105,25 +105,25 @@
 
                             <h4>開始日時</h4>
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
-                                <input type="text" name="started_at" class="form-control input-lg"
-                                       placeholder="2016-01-01 01:02:03"
+                                <span class="input-group-addon"><i class="fa fa-cube"></i></span>
+                                <input type="text" name="started_at" class="form-control pull-right"
+                                       placeholder="2016/07/11 12:00:00" id="started_at"
                                        value="{{ old('started_at', null) }}">
                                 <span class="input-group-addon"><i class="fa fa-check"></i></span>
                             </div>
 
                             <h4>終了日時</h4>
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
-                                <input type="text" name="ended_at" class="form-control input-lg"
-                                       placeholder="2035-01-01 01:02:03"
+                                <span class="input-group-addon"><i class="fa fa-cube"></i></span>
+                                <input type="text" name="ended_at" class="form-control pull-right"
+                                       placeholder="2035/12/31 12:00:00" id="ended_at"
                                        value="{{ old('ended_at', null) }}">
                                 <span class="input-group-addon"><i class="fa fa-check"></i></span>
                             </div>
 
                             <h4>配送料</h4>
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-unlock-alt"></i></span>
+                                <span class="input-group-addon"><i class="fa fa-cube"></i></span>
 
                                 <select class="form-control" name="delivery_charge">
 
@@ -137,7 +137,7 @@
 
                             <h4>発送方法</h4>
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-unlock-alt"></i></span>
+                                <span class="input-group-addon"><i class="fa fa-cube"></i></span>
 
                                 <select class="form-control" name="delivery_plan">
 
@@ -151,7 +151,7 @@
 
                             <h4>発送元の都道府県</h4>
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-unlock-alt"></i></span>
+                                <span class="input-group-addon"><i class="fa fa-cube"></i></span>
 
                                 <select class="form-control" name="pref">
 
@@ -165,7 +165,7 @@
 
                             <h4>発送日数</h4>
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-unlock-alt"></i></span>
+                                <span class="input-group-addon"><i class="fa fa-cube"></i></span>
 
                                 <select class="form-control" name="delivery_date">
 
@@ -179,7 +179,7 @@
 
                             <h4>コメント</h4>
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+                                <span class="input-group-addon"><i class="fa fa-cube"></i></span>
                                 <input type="text" name="comment" class="form-control input-lg" placeholder="コメント"
                                        value="{{ old('comment', null) }}">
                                 <span class="input-group-addon"><i class="fa fa-check"></i></span>
@@ -212,11 +212,70 @@
 
 @section('style')
 
+    <link rel="stylesheet" href={{asset("plugins/daterangepicker/daterangepicker-bs3.css")}}>
+    <link rel="stylesheet" href={{asset("plugins/datepicker/datepicker3.css")}}>
+    <link rel="stylesheet" href={{asset("plugins/timepicker/bootstrap-timepicker.min.css")}}>
+
 @endsection
 
 @section('script')
 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/locale/ja.js"></script>
+    <script src={{asset("plugins/daterangepicker/daterangepicker.js")}}></script>
+    <script src={{asset("plugins/datepicker/bootstrap-datepicker.js")}}></script>
+    <script src={{asset("plugins/timepicker/bootstrap-timepicker.min.js")}}></script>
+
     <script>
+        
+        $(function () {
+            
+            $('#started_at').daterangepicker({
+                startDate: '{{date("Y-m-d")}}}',
+                endDate: '{{date("Y-m-d")}}}',
+                format: 'YYYY/MM/DD HH:mm:ss',
+                showDropdowns: false,
+                opens: 'left',
+                locale: {
+                    applyLabel: '反映',
+                    cancelLabel: '取消',
+                    fromLabel: '開始日',
+                    toLabel: '終了日',
+                    weekLabel: 'W',
+                    customRangeLabel: '自分で指定',
+                    daysOfWeek: moment.weekdaysMin(),
+                    monthNames: moment.monthsShort(),
+                    firstDay: moment.localeData()._week.dow
+                },
+                timePicker: true,
+                timePickerIncrement: 30,
+                timePicker12Hour: false,
+                singleDatePicker: true,
+            });
+            $('#ended_at').daterangepicker({
+                startDate: '2035-12-31 23:30:00',
+                endDate: '2035-12-31 23:30:00',
+                format: 'YYYY/MM/DD HH:mm:ss',
+                showDropdowns: false,
+                opens: 'left',
+                locale: {
+                    applyLabel: '反映',
+                    cancelLabel: '取消',
+                    fromLabel: '開始日',
+                    toLabel: '終了日',
+                    weekLabel: 'W',
+                    customRangeLabel: '自分で指定',
+                    daysOfWeek: moment.weekdaysMin(),
+                    monthNames: moment.monthsShort(),
+                    firstDay: moment.localeData()._week.dow
+                },
+                timePicker: true,
+                timePickerIncrement: 30,
+                timePicker12Hour: false,
+                singleDatePicker: true,
+            });
+            
+        });
 
     </script>
 
