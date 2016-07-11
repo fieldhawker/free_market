@@ -316,24 +316,33 @@ class UserTest extends TestCase
 
         $faker = Faker\Factory::create('ja_JP');
 
+        // 前正常
+
         $input["name"]     = 'テスト';
         $input["kana"]     = 'テスト';
         $input["email"]    = $faker->unique()->email;
-        $input["password"] = Hash::make("password");
-        $input["uid"]      = hash("sha256", uniqid(mt_rand(), 1));
+        $input["password"] = 'password';
 
-        Faker\Factory::create('User', $input);
+        $id = (new User)->registerGetId($input);
 
-        $user = User::latest()->first();
+//        $input["name"]     = 'テスト';
+//        $input["kana"]     = 'テスト';
+//        $input["email"]    = $faker->unique()->email;
+//        $input["password"] = Hash::make("password");
+//        $input["uid"]      = hash("sha256", uniqid(mt_rand(), 1));
+//
+//        Faker\Factory::create('User', $input);
+//
+//        $user = User::latest()->first();
 
-        // 正常
+        // 正常更新
 
         $input          = null;
         $input["name"]  = 'テスト2';
         $input["kana"]  = 'テスト2';
         $input["email"] = $faker->unique()->email;
 
-        $result = (new User)->updateUsers($input, $user->id);
+        $result = (new User)->updateUsers($input, $id);
 
         $this->assertTrue($result);
 
