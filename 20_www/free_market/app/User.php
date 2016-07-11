@@ -3,6 +3,7 @@
 namespace App;
 
 use DB;
+use Log;
 use Hash;
 use Validator;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -130,6 +131,7 @@ class User extends Authenticatable
         if ($v->fails()) {
             // この部分注意
             $this->errors = $v->errors();
+            Log::info('validate error', ['errors' => $this->errors]);
 
             return false;
         }

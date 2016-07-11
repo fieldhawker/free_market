@@ -80,13 +80,23 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
+        Log::info('START', ['file' => __FILE__, 'class' => __CLASS__]);
 
         $input["name"]     = $request->name;
         $input["kana"]     = $request->kana;
         $input["email"]    = $request->email;
         $input["password"] = $request->password;
 
+        Log::info('Input parameter', ['name' => $input["name"]]);
+        Log::info('Input parameter', ['kana' => $input["kana"]]);
+        Log::info('Input parameter', ['email' => $input["email"]]);
+        Log::debug('Input parameter', ['password' => $input["password"]]);
+
         $exception = DB::transaction(function () use ($input) {
+
+            // ----------------------------
+            // 会員登録
+            // ----------------------------
 
             $id = $this->user->registerGetId($input);
 
@@ -97,19 +107,23 @@ class UsersController extends Controller
                 Session::flash('message', self::MESSAGE_VALID_ERROR_END);
 
                 return redirect('/admin/users/create/')
-                  ->with('user', $this->user)
-                  ->with('errors', $errors)
-                  ->withInput();
+                    ->with('user', $this->user)
+                    ->with('errors', $errors)
+                    ->withInput();
 
             }
 
             Log::info('会員が登録されました。', ['id' => $id]);
 
+            // ----------------------------
+            // 操作ログ登録
+            // ----------------------------
+
             $data = [
-              'screen_number' => self::SCREEN_NUMBER_REGISTER,
-              'target_id'     => $id,
-              'operator'      => Auth::guard("admin")->user()->id,
-              'comment'       => json_encode($input, JSON_UNESCAPED_UNICODE),
+                'screen_number' => self::SCREEN_NUMBER_REGISTER,
+                'target_id'     => $id,
+                'operator'      => Auth::guard("admin")->user()->id,
+                'comment'       => json_encode($input, JSON_UNESCAPED_UNICODE),
             ];
 
             $id = $this->ope->registerGetId($data);
@@ -118,11 +132,18 @@ class UsersController extends Controller
 
             Session::flash('message', self::MESSAGE_REGISTER_END);
 
-            return redirect('/admin/users');
-
         });
 
-        return $exception;
+        if ($exception) {
+
+            Log::info('EXECUTE FAILURE!', ['file' => __FILE__, 'class' => __CLASS__]);
+            return $exception;
+
+        }
+
+        Log::info('END', ['file' => __FILE__, 'class' => __CLASS__]);
+
+        return redirect('/admin/users');
 
     }
 
@@ -135,17 +156,19 @@ class UsersController extends Controller
     public function show($id)
     {
 
+        // ----------------------------
         // レコードを検索
+        // ----------------------------
 
         $user = $this->user->findOrFail($id);
 
         if (!$user) {
             return redirect('/admin/users');
         }
-        
+
         //検索結果をビューに渡す
         return view('admin.users.show')
-          ->with('user', $user);
+            ->with('user', $user);
     }
 
     /**
@@ -157,7 +180,9 @@ class UsersController extends Controller
     public function edit(Request $request, $id)
     {
 
+        // ----------------------------
         // レコードを検索
+        // ----------------------------
 
         $user = $this->user->findOrFail($id);
 
@@ -165,29 +190,36 @@ class UsersController extends Controller
             return redirect('/admin/users');
         }
 
+        // ----------------------------
         // 他の管理者が編集中か
+        // ----------------------------
 
         $data = [
-          'screen_number' => self::SCREEN_NUMBER_UPDATE,
-          'target_id'     => $id,
-          'operator'      => Auth::guard("admin")->user()->id,
+            'screen_number' => self::SCREEN_NUMBER_UPDATE,
+            'target_id'     => $id,
+            'operator'      => Auth::guard("admin")->user()->id,
         ];
 
         $is_exclusives = $this->exclusives->isExpiredByOtherAdmin($data);
 
         if (!$is_exclusives) {
 
+            // ----------------------------
             // 編集中にする
+            // ----------------------------
 
             $data["expired_at"] = date("Y/m/d H:i:s", strtotime(Config::get('const.exclusives_time')));
             $exclusives_id      = $this->exclusives->insertGetId($data);
 
         }
 
+        // ----------------------------
         //検索結果をビューに渡す
+        // ----------------------------
+
         return view('admin.users.update')
-          ->with('user', $user)
-          ->with('is_exclusives', $is_exclusives);
+            ->with('user', $user)
+            ->with('is_exclusives', $is_exclusives);
 
     }
 
@@ -199,19 +231,27 @@ class UsersController extends Controller
      */
     public function update(Request $request, $id)
     {
+        Log::info('START', ['file' => __FILE__, 'class' => __CLASS__]);
 
         $input["name"]  = $request->name;
         $input["kana"]  = $request->kana;
         $input["email"] = $request->email;
 
+        Log::info('Input parameter', ['id' => $id]);
+        Log::info('Input parameter', ['name' => $input["name"]]);
+        Log::info('Input parameter', ['kana' => $input["kana"]]);
+        Log::info('Input parameter', ['email' => $input["email"]]);
+
         $exception = DB::transaction(function () use ($input, $id) {
 
+            // ----------------------------
             // 他の管理者が編集中か
+            // ----------------------------
 
             $exclusives = [
-              'screen_number' => self::SCREEN_NUMBER_UPDATE,
-              'target_id'     => $id,
-              'operator'      => Auth::guard("admin")->user()->id,
+                'screen_number' => self::SCREEN_NUMBER_UPDATE,
+                'target_id'     => $id,
+                'operator'      => Auth::guard("admin")->user()->id,
             ];
 
             $is_exclusives = $this->exclusives->isExpiredByOtherAdmin($exclusives);
@@ -223,13 +263,15 @@ class UsersController extends Controller
                 Session::flash('message', self::MESSAGE_VALID_ERROR_END);
 
                 return redirect($url)
-                  ->with('user', $this->user)
-                  ->withInput();
+                    ->with('user', $this->user)
+                    ->withInput();
 
             }
 
+            // ----------------------------
             // 存在チェック
-            
+            // ----------------------------
+
             $user = $this->user->find($id);
 
             if (!$user) {
@@ -239,8 +281,10 @@ class UsersController extends Controller
                 return redirect('/admin/users/');
 
             }
-            
+
+            // ----------------------------
             // 更新を開始
+            // ----------------------------
 
             $result = $this->user->updateUsers($input, $id);
 
@@ -252,25 +296,29 @@ class UsersController extends Controller
                 Session::flash('message', self::MESSAGE_VALID_ERROR_END);
 
                 return redirect($url)
-                  ->with('user', $this->user)
-                  ->with('errors', $errors)
-                  ->withInput();
+                    ->with('user', $this->user)
+                    ->with('errors', $errors)
+                    ->withInput();
 
             }
 
             Log::info('会員が更新されました。', ['id' => $id]);
 
+            // ----------------------------
             // 排他制御を削除
+            // ----------------------------
 
             $result = $this->exclusives->deleteExpiredByMine($exclusives);
 
+            // ----------------------------
             // 操作ログを記録
+            // ----------------------------
 
             $data = [
-              'screen_number' => self::SCREEN_NUMBER_UPDATE,
-              'target_id'     => $id,
-              'operator'      => Auth::guard("admin")->user()->id,
-              'comment'       => json_encode($input, JSON_UNESCAPED_UNICODE),
+                'screen_number' => self::SCREEN_NUMBER_UPDATE,
+                'target_id'     => $id,
+                'operator'      => Auth::guard("admin")->user()->id,
+                'comment'       => json_encode($input, JSON_UNESCAPED_UNICODE),
             ];
 
             $id = $this->ope->registerGetId($data);
@@ -279,11 +327,18 @@ class UsersController extends Controller
 
             Session::flash('message', self::MESSAGE_UPDATE_END);
 
-            return redirect('/admin/users');
-
         });
 
-        return $exception;
+        if ($exception) {
+
+            Log::info('EXECUTE FAILURE!', ['file' => __FILE__, 'class' => __CLASS__]);
+            return $exception;
+
+        }
+
+        Log::info('END', ['file' => __FILE__, 'class' => __CLASS__]);
+
+        return redirect('/admin/users');
 
     }
 
@@ -294,15 +349,20 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
+        Log::info('START', ['file' => __FILE__, 'class' => __CLASS__]);
+
+        Log::info('Input parameter', ['$id' => $id]);
 
         $exception = DB::transaction(function () use ($id) {
 
+            // ----------------------------
             // 他の管理者が編集中か
+            // ----------------------------
 
             $exclusives = [
-              'screen_number' => self::SCREEN_NUMBER_UPDATE,
-              'target_id'     => $id,
-              'operator'      => Auth::guard("admin")->user()->id,
+                'screen_number' => self::SCREEN_NUMBER_UPDATE,
+                'target_id'     => $id,
+                'operator'      => Auth::guard("admin")->user()->id,
             ];
 
             $is_exclusives = $this->exclusives->isExpiredByOtherAdmin($exclusives);
@@ -315,30 +375,47 @@ class UsersController extends Controller
 
             }
 
+            // ----------------------------
             // 削除対象レコードを検索
+            // ----------------------------
+
             $user = $this->user->find($id);
 
+            // ----------------------------
             // 論理削除
+            // ----------------------------
+
             $user->delete();
 
             Log::info('会員が削除されました。', ['id' => $id]);
 
+            // ----------------------------
+            // 操作ログを記録
+            // ----------------------------
+
             $data = [
-              'screen_number' => self::SCREEN_NUMBER_DELETE,
-              'target_id'     => $id,
-              'operator'      => Auth::guard("admin")->user()->id,
-              'comment'       => json_encode($user, JSON_UNESCAPED_UNICODE),
+                'screen_number' => self::SCREEN_NUMBER_DELETE,
+                'target_id'     => $id,
+                'operator'      => Auth::guard("admin")->user()->id,
+                'comment'       => json_encode($user, JSON_UNESCAPED_UNICODE),
             ];
 
             $id = $this->ope->registerGetId($data);
 
             Log::info('操作ログが登録されました。', ['id' => $id]);
 
-            return redirect()->to('/admin/users')->with('message', self::MESSAGE_DELETE_END);
-
         });
 
-        return $exception;
+        if ($exception) {
+
+            Log::info('EXECUTE FAILURE!', ['file' => __FILE__, 'class' => __CLASS__]);
+            return $exception;
+
+        }
+
+        Log::info('END', ['file' => __FILE__, 'class' => __CLASS__]);
+
+        return redirect()->to('/admin/users')->with('message', self::MESSAGE_DELETE_END);
 
     }
 }
