@@ -319,12 +319,9 @@ class UserTest extends TestCase
         $input["name"]     = 'テスト';
         $input["kana"]     = 'テスト';
         $input["email"]    = $faker->unique()->email;
-        $input["password"] = Hash::make("password");
-        $input["uid"]      = hash("sha256", uniqid(mt_rand(), 1));
-
-        Faker\Factory::create('User', $input);
-
-        $user = User::latest()->first();
+        $input["password"] = "password";
+        
+        $id = (new User)->registerGetId($input);
 
         // 正常
 
@@ -333,7 +330,7 @@ class UserTest extends TestCase
         $input["kana"]  = 'テスト2';
         $input["email"] = $faker->unique()->email;
 
-        $result = (new User)->updateUsers($input, $user->id);
+        $result = (new User)->updateUsers($input, $id);
 
         $this->assertTrue($result);
 

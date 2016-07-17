@@ -128,7 +128,8 @@ class User extends Authenticatable
         $v = Validator::make($data, $rules, $this->messages);
 
         if ($v->fails()) {
-            // この部分注意
+
+//            var_dump($v->errors());
             $this->errors = $v->errors();
 
             return false;

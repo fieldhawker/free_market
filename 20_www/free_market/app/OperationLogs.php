@@ -40,8 +40,8 @@ class OperationLogs extends Model
      * @var array
      */
     private $rules = [
-      'screen_number' => 'required|numeric|min:1|max:4',
-      'target_id'     => 'required|numeric|min:1|max:11',
+      'screen_number' => 'required|numeric|min:1|max:9999',
+      'target_id'     => 'required|numeric|min:1|max:99999999999',
       'executed_at'   => 'required|date',
     ];
 
@@ -83,7 +83,9 @@ class OperationLogs extends Model
         $v = Validator::make($data, $rules, $this->messages);
 
         if ($v->fails()) {
-            // この部分注意
+
+//            var_dump($v->errors());
+            
             $this->errors = $v->errors();
 
             return false;
