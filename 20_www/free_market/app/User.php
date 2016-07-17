@@ -3,6 +3,7 @@
 namespace App;
 
 use DB;
+use Log;
 use Hash;
 use Validator;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -131,6 +132,7 @@ class User extends Authenticatable
 
 //            var_dump($v->errors());
             $this->errors = $v->errors();
+            Log::info('validate error', ['errors' => $this->errors]);
 
             return false;
         }

@@ -3,6 +3,7 @@
 namespace App;
 
 use DB;
+use Log;
 use Validator;
 use Illuminate\Database\Eloquent\Model;
 
@@ -87,6 +88,7 @@ class OperationLogs extends Model
 //            var_dump($v->errors());
             
             $this->errors = $v->errors();
+            Log::info('validate error', ['errors' => $this->errors]);
 
             return false;
         }

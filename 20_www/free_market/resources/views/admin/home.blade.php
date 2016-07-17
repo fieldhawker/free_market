@@ -42,14 +42,14 @@
             <!-- small box -->
             <div class="small-box bg-green">
                 <div class="inner">
-                    <h3>53<sup style="font-size: 15px">品</sup></h3>
+                    <h3>{{$items_count}}<sup style="font-size: 15px">品</sup></h3>
 
                     <p>商品数</p>
                 </div>
                 <div class="icon">
                     <i class="fa fa-cubes"></i>
                 </div>
-                <a href="#" class="small-box-footer">
+                <a href="/admin/items/" class="small-box-footer">
                     More info <i class="fa fa-arrow-circle-right"></i>
                 </a>
             </div>
