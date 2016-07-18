@@ -1,0 +1,28 @@
+
+# scala
+
+# 開発環境
+
+## activatorをインストール
+cuiとかguiとかやり方はいろいろ
+
+activator -help
+activator run
+activator
+
+## ローカルにMySQLをインストール
+
+brew install mysql
+mysql.server start
+
+SET PASSWORD FOR root@localhost=PASSWORD('pass');
+
+### DB
+database : scala
+user : root
+pass : pass
+
+# route設定
+> conf/routes
+>>
+
