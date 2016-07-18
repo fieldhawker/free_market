@@ -15,3 +15,6 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 
 # An example controller showing how to write asynchronous code
 GET     /admin                      controllers.admin.AdminHomeController.index
+
+# An example controller showing how to write asynchronous code
+GET     /admin/users                controllers.admin.UsersController.index
