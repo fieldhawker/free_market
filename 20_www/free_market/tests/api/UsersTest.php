@@ -19,18 +19,18 @@ class UsersTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /**
-     * 
-     */
-    public function testIndex(){
-
-        $this->withoutMiddleware();
-        
-        $this->get('/api/users')
-          ->seeJson([
-            'email' => 'dev@se-project.co.jp',
-          ]);
-        
-    }
+//    /**
+//     * 
+//     */
+//    public function testIndex(){
+//
+//        $this->withoutMiddleware();
+//        
+//        $this->get('/api/users')
+//          ->seeJson([
+//            'email' => 'dev@se-project.co.jp',
+//          ]);
+//        
+//    }
         
 }

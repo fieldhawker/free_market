@@ -79,40 +79,23 @@ class User extends Authenticatable
      */
     private $errors;
 
-//    /**
-//     *
-//     */
-//    protected static function boot()
-//    {
-//        parent::boot();
-//
-//        self::creating(function ($user) {
-//            $user->onCreatingHandler();
-//        });
-//        self::updating(function ($user) {
-//            return $user->onUpdatingHandler();
-//        });
-//    }
-//
-//
-//    /**
-//     * @return bool
-//     */
-//    private function onCreatingHandler()
-//    {
-//        //update時刻を記録したり何かする
-//        return true; //キャンセルしたいときはfalseを返す
-//    }
-//
-//
-//    /**
-//     * @return bool
-//     */
-//    private function onUpdatingHandler()
-//    {
-//        //update時刻を記録したり何かする
-//        return true; //キャンセルしたいときはfalseを返す
-//    }
+    /**
+     * @param $value
+     *
+     * @return mixed
+     */
+    public function getPasswordAttribute($value)
+    {
+        return Hash::make($value);
+    }
+
+    /**
+     * @return Hash
+     */
+    public function getUidAttribute()
+    {
+        return hash("sha256", uniqid(mt_rand(), 1));
+    }
 
     /**
      * @param        $data
@@ -152,15 +135,15 @@ class User extends Authenticatable
     /**
      * @param $data
      *
-     * @return null
+     * @return bool
      */
     public function registerGetId($data)
     {
 
         if ($this->validate($data)) {
 
-            $data["password"] = Hash::make($data["password"]);
-            $data["uid"]      = hash("sha256", uniqid(mt_rand(), 1));
+            $data["password"] = $this->getPasswordAttribute($data['password']);
+            $data["uid"]      = $this->getUidAttribute();
             $id               = DB::table('users')->insertGetId($data);
 
             return $id;

@@ -52,8 +52,8 @@ class OperationLogs extends Model
     private $messages = [
       'required' => ':attributeフィールドは必須です。',
       'numeric'  => ':attributeフィールドは数字で入力してください。',
-      'min'      => ':attributeフィールドは:sizeより大きく。',
-      'max'      => ':attributeフィールドは:sizeより小さく。',
+      'min'      => ':attributeフィールドは:minより大きく。',
+      'max'      => ':attributeフィールドは:maxより小さく。',
       'date'     => ':attributeフィールドは日付型で入力してください。',
     ];
 
