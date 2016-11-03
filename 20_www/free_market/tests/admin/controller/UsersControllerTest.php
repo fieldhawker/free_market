@@ -30,7 +30,7 @@ class UsersControllerTest extends TestCase
         // 未ログインはログイン画面にリダイレクト
         $this->visit('/admin/')->see('Admin Login');
         $this->visit('/admin/users/create/')->see('Admin Login');
-        
+
     }
 
     /**
@@ -41,7 +41,7 @@ class UsersControllerTest extends TestCase
     public function testListPage()
     {
 
-        // ログインしていたら管理画面を表示
+        // ログインしていたら一覧画面を表示
         $admin = factory(App\Models\Admin::class)->create();
         $this->actingAs($admin, 'admin');
 
@@ -62,20 +62,22 @@ class UsersControllerTest extends TestCase
         // 会員を登録する
         $this
           ->visit('/admin/users/create/')
+          // 画面表示に成功しているか
           ->see('会員登録')
-              ->seeInField('name', '')      // 初期値の確認
-          ->seeInField('kana', '')      
-          ->seeInField('email', '')     
-          ->seeInField('password', '')  
-          ->type('テスト', 'name')           // テストデータの入力
+          // 初期値の確認
+          ->seeInField('name', '')
+          ->seeInField('kana', '')
+          ->seeInField('email', '')
+          ->seeInField('password', '')
+          // テストデータの入力
+          ->type('テスト', 'name')
           ->type('テスト', 'kana')
           ->type('takano@se-project.co.jp', 'email')
           ->type('takanotakano', 'password')
           ->press('登録')
           ->seeStatusCode(200)
           ->dontSee('エラーが発生しました!')
-          ->see('登録が完了しました。')
-        ;
+          ->see('登録が完了しました。');
 
     }
 
