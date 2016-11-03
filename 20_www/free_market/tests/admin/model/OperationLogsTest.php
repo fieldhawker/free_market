@@ -1,6 +1,6 @@
 <?php
 
-use App\OperationLogs;
+use App\Models\OperationLogs;
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
