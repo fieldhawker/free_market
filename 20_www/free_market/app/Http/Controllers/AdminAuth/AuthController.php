@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\AdminAuth;
 
-use App\Admin;
+use App\Models\Admin;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;

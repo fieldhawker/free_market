@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\User;
-use App\Items;
+use App\Models\Items;
+use App\Models\User;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;

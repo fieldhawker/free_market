@@ -55,19 +55,28 @@
     state: present
   tags:
     - mariadb
-
-- name: MySQLユーザー market を作成し，market.* にすべての権限を与える
-  mysql_user:
-    name: "{{ mysql_db_user }}"
-    password: "{{ mysql_db_password }}"
-    priv: "{{ mysql_db_user }}.*:ALL"
-    host: localhost
+    
+- name: テスト用データベース market_test を作成
+  mysql_db:
+    name: "{{ mysql_db_name }}_test"
     login_user: root
     login_password: "{{ mysql_root_password }}"
     state: present
   tags:
     - mariadb
 
+- name: MySQLユーザー market を作成し，market.* / market_test.* にすべての権限を与える
+  mysql_user:
+    name: "{{ mysql_db_user }}"
+    password: "{{ mysql_db_password }}"
+    priv: "{{ mysql_db_name }}.*:ALL / {{ mysql_db_name }}_test.*:ALL"
+    host: localhost
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    state: present
+  tags:
+    - mariadb
+    
 - name: restart MariaDB
   command: systemctl restart mariadb.service
   tags:

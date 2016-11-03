@@ -8,7 +8,7 @@ namespace app\Libs;
  * Time: 21:35
  */
 
-use App\OperationLogs;
+use App\Models\OperationLogs;
 
 class OperationLogsClass
 {
