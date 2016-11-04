@@ -80,6 +80,16 @@ class User extends Authenticatable
     private $errors;
 
     /**
+     * @return mixed
+     */
+    public function findAll()
+    {
+        $users = DB::table($this->table)->orderBy('id', 'desc')->get();
+
+        return $users;
+    }
+
+    /**
      * @param $value
      *
      * @return mixed
@@ -112,8 +122,7 @@ class User extends Authenticatable
         $v = Validator::make($data, $rules, $this->messages);
 
         if ($v->fails()) {
-
-//            var_dump($v->errors());
+            
             $this->errors = $v->errors();
             Log::info('validate error', ['errors' => $this->errors]);
 
@@ -121,6 +130,16 @@ class User extends Authenticatable
         }
 
         return true;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getErrors()
+    {
+
+        return $this->errors;
+
     }
 
     /**
@@ -137,22 +156,15 @@ class User extends Authenticatable
      *
      * @return bool
      */
-    public function registerGetId($data)
+    public function insertGetId($data)
     {
 
-        if ($this->validate($data)) {
+        $data["password"] = $this->getPasswordAttribute($data['password']);
+        $data["uid"]      = $this->getUidAttribute();
+        $id               = DB::table($this->table)->insertGetId($data);
 
-            $data["password"] = $this->getPasswordAttribute($data['password']);
-            $data["uid"]      = $this->getUidAttribute();
-            $id               = DB::table('users')->insertGetId($data);
+        return $id;
 
-            return $id;
-
-        } else {
-
-            return false;
-
-        }
     }
 
 

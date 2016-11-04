@@ -158,6 +158,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\LocalServiceProvider::class,
 
+        App\Providers\UtilServiceProvider::class,
+
     ],
 
     /*
@@ -204,6 +206,8 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'OperationLogsClass' => app\Libs\OperationLogsClass::class,
+
+        'Util' => App\Facades\Util::class,
 
     ],
 

@@ -86,7 +86,7 @@ class OperationLogs extends Model
         if ($v->fails()) {
 
 //            var_dump($v->errors());
-            
+
             $this->errors = $v->errors();
             Log::info('validate error', ['errors' => $this->errors]);
 
@@ -96,22 +96,18 @@ class OperationLogs extends Model
         return true;
     }
 
-//    /**
-//     * @param $data
-//     */
-//    public function registerGetId($data)
-//    {
-//        $id = null;
-//
-//        DB::beginTransaction();
-//
-//        // インサート処理
-//        $id = DB::table('operation_logs')->insertGetId($data);
-//
-//        DB::commit();
-//
-//        return $id;
-//
-//    }
+    /**
+     * @param $data
+     *
+     * @return mixed
+     */
+    public function insertGetId($data)
+    {
+
+        $id = DB::table($this->table)->insertGetId($data);
+
+        return $id;
+
+    }
 
 }

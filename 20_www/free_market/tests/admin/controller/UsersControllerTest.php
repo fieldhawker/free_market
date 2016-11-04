@@ -45,7 +45,9 @@ class UsersControllerTest extends TestCase
         $admin = factory(App\Models\Admin::class)->create();
         $this->actingAs($admin, 'admin');
 
-        $this->visit('/admin/users')->see('会員一覧');
+        $this->visit('/admin/users')
+          ->seeStatusCode(200)
+          ->see('会員一覧');
 
     }
 
@@ -60,8 +62,7 @@ class UsersControllerTest extends TestCase
         $this->actingAs($admin, 'admin');
 
         // 会員を登録する
-        $this
-          ->visit('/admin/users/create/')
+        $this->visit('/admin/users/create/')
           // 画面表示に成功しているか
           ->see('会員登録')
           // 初期値の確認
