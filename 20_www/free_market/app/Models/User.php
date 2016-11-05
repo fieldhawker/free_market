@@ -79,15 +79,18 @@ class User extends Authenticatable
      */
     private $errors;
 
-    /**
-     * @return mixed
-     */
-    public function findAll()
-    {
-        $users = DB::table($this->table)->orderBy('id', 'desc')->get();
+//    /**
+//     * @param $id
+//     *
+//     * @return mixed
+//     */
+//    public function findById($id)
+//    {
+//            $users = $this->findOrFail($id);
+//
+//        return $users;
+//    }
 
-        return $users;
-    }
 
     /**
      * @param $value
@@ -168,6 +171,25 @@ class User extends Authenticatable
     }
 
 
+    /**
+     * @param $data
+     * @param $id
+     *
+     * @return mixed
+     */
+    public function updateUser($data, $id)
+    {
+        
+        $result = User::where('id', '=', $id)->update(
+          ['name' => $data["name"]],
+          ['kana' => $data["kana"]],
+          ['email' => $data["email"]]
+        );
+        
+        return $result;
+
+    }
+    
     /**
      * @param $data
      * @param $id

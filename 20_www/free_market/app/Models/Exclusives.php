@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use DB;
+use Log;
+use Config;
 use Illuminate\Database\Eloquent\Model;
 
 class Exclusives extends Model
@@ -11,6 +13,8 @@ class Exclusives extends Model
      * @var string
      */
     protected $table = "exclusives";
+    
+    public $exclusive;
 
 
     /**
@@ -34,13 +38,28 @@ class Exclusives extends Model
     protected $hidden = [
     ];
 
+
     /**
      * @param $data
      *
      * @return bool
      */
-    public function isExpiredByOtherAdmin($data)
+    public function setExclusive($data)
     {
+        $this->exclusive = $data;
+        
+        return true;
+    }
+
+    /**
+     * @param $data
+     *
+     * @return bool
+     */
+    public function isExpiredByOtherAdmin()
+    {
+        $data = $this->exclusive;
+        
         $count_exclusives = DB::table($this->table)
           ->where('screen_number', '=', $data["screen_number"])
           ->where('target_id', '=', $data["target_id"])
@@ -53,6 +72,25 @@ class Exclusives extends Model
         return $is_exclusives;
     }
 
+    /**
+     * @return mixed
+     */
+    public function deleteExclusive()
+    {
+
+        $data = $this->exclusive;
+        
+        Log::info('削除する排他制御', $data);
+        
+        $result = DB::table($this->table)
+          ->where('screen_number', '=', $data["screen_number"])
+          ->where('target_id', '=', $data["target_id"])
+          ->where('operator', '=', $data["operator"])
+          ->delete();
+
+        return $result;
+    }
+    
     /**
      * @param $data
      *
@@ -68,5 +106,20 @@ class Exclusives extends Model
           ->delete();
 
         return $result;
+    }
+
+    /**
+     * @param $data
+     *
+     * @return mixed
+     */
+    public function insertGetId($data)
+    {
+
+        $data["expired_at"] = date("Y/m/d H:i:s", strtotime(Config::get('const.exclusives_time')));
+        $id                 = DB::table($this->table)->insertGetId($data);
+
+        return $id;
+
     }
 }

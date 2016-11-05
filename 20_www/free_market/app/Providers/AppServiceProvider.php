@@ -40,6 +40,14 @@ class AppServiceProvider extends ServiceProvider
               );
           }
         );
+        $this->app->bind(
+          \App\Repositories\ExclusivesRepositoryInterface::class,
+          function ($app) {
+              return new \App\Repositories\ExclusivesRepository(
+                new \App\Models\Exclusives
+              );
+          }
+        );
         
     }
 }

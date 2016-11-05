@@ -2,9 +2,9 @@
 namespace App\Repositories;
 
 /**
- * Interface UsersRepositoryInterface
+ * Interface ExclusivesRepositoryInterface
  */
-interface UsersRepositoryInterface
+interface ExclusivesRepositoryInterface
 {
 
     /**
@@ -18,19 +18,27 @@ interface UsersRepositoryInterface
      *
      * @return mixed
      */
-    public function findById($id);
+    public function findOrFail($id);
 
     /**
      * @param array $params
      *
      * @return mixed
      */
-    public function validate(array $params, $id=null);
+    public function validate(array $params);
 
     /**
      * @return mixed
      */
     public function getErrors();
+
+
+    /**
+     * @param array $data
+     *
+     * @return mixed
+     */
+    public function setExclusive(array $data);
 
     /**
      * @param array $user
@@ -41,20 +49,16 @@ interface UsersRepositoryInterface
 
 
     /**
-     * @param $input
-     * @param $id
+     * @param array $data
      *
      * @return mixed
      */
-    public function updateUser($input, $id);
+    public function isExpiredByOtherAdmin();
 
     /**
-     * @param $id
-     *
      * @return mixed
      */
-    public function deleteUser($id);
-    
+    public function deleteExclusive();
     /**
      * @param array $params
      *

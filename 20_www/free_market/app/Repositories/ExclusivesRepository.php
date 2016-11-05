@@ -1,23 +1,23 @@
 <?php
 namespace App\Repositories;
 
-use App\Models\User;
+use App\Models\Exclusives;
 
 /**
- * Class UsersRepository
+ * Class ExclusivesRepository
  */
-class UsersRepository implements UsersRepositoryInterface
+class ExclusivesRepository implements ExclusivesRepositoryInterface
 {
 
     protected $eloquent;
 
 
     /**
-     * UsersRepository constructor.
+     * ExclusivesRepository constructor.
      *
-     * @param User $eloquent
+     * @param Exclusives $eloquent
      */
-    public function __construct(User $eloquent)
+    public function __construct(Exclusives $eloquent)
     {
         $this->eloquent = $eloquent;
     }
@@ -27,9 +27,9 @@ class UsersRepository implements UsersRepositoryInterface
      */
     public function findAll()
     {
-        $users = $this->eloquent->orderBy('id', 'desc')->get();
+        $Exclusives = $this->eloquent->findAll();
 
-        return $users;
+        return $Exclusives;
     }
 
     /**
@@ -37,11 +37,11 @@ class UsersRepository implements UsersRepositoryInterface
      *
      * @return mixed
      */
-    public function findById($id)
+    public function findOrFail($id)
     {
-        $users = $this->eloquent->findOrFail($id);
+        $Exclusives = $this->eloquent->findOrFail($id);
 
-        return $users;
+        return $Exclusives;
     }
 
 
@@ -50,9 +50,9 @@ class UsersRepository implements UsersRepositoryInterface
      *
      * @return bool
      */
-    public function validate(array $params, $id=null)
+    public function validate(array $params)
     {
-        $result = $this->eloquent->validate($params, $id);
+        $result = $this->eloquent->validate($params);
 
         return $result;
     }
@@ -67,36 +67,48 @@ class UsersRepository implements UsersRepositoryInterface
         return $errors;
     }
 
+
+    /**
+     * @param array $data
+     *
+     * @return bool
+     */
+    public function setExclusive(array $data)
+    {
+        $result = $this->eloquent->setExclusive($data);
+        
+        return $result;
+    }
+
     /**
      * @param $user
      *
      * @return mixed
      */
-    public function insertGetId(array $user)
+    public function insertGetId(array $data)
     {
-        $id = $this->eloquent->insertGetId($user);
+
+        $id = $this->eloquent->insertGetId($data);
 
         return $id;
     }
 
 
     /**
-     * @param $input
-     * @param $id
+     * @param array $data
      *
-     * @return mixed
+     * @return bool
      */
-    public function updateUser($input, $id) {
-        
-        $result = $this->eloquent->updateUser($input, $id);
+    public function isExpiredByOtherAdmin()
+    {
+        $is_exclusives = $this->eloquent->isExpiredByOtherAdmin();
 
-        return $result;
+        return $is_exclusives;
     }
     
-    public function deleteUser($id)
+    public function deleteExclusive()
     {
-        $user = $this->findById($id);
-        $result = $user->delete();
+        $result = $this->eloquent->deleteExclusive();
 
         return $result;
     }

@@ -38,8 +38,8 @@ class UsersController extends Controller
     const MESSAGE_VALID_ERROR_END = 'error';
     const MESSAGE_MODIFIED_END    = 'modified';
 //    const SCREEN_NUMBER_REGISTER  = 110;
-    const SCREEN_NUMBER_UPDATE    = 120;
-    const SCREEN_NUMBER_DELETE    = 130;
+//    const SCREEN_NUMBER_UPDATE    = 120;
+//    const SCREEN_NUMBER_DELETE    = 130;
 
     private $user;
     private $ope;
@@ -58,10 +58,10 @@ class UsersController extends Controller
 
         $this->middleware('auth:admin');
 
-
-        $this->user       = $user;
-        $this->ope        = $ope;
-        $this->exclusives = $exclusives;
+//
+//        $this->user       = $user;
+//        $this->ope        = $ope;
+//        $this->exclusives = $exclusives;
     }
 
     /**
@@ -162,6 +162,8 @@ class UsersController extends Controller
 
 
     /**
+     * 会員情報の詳細を取得する
+     * 
      * @param $id
      *
      * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
@@ -169,63 +171,76 @@ class UsersController extends Controller
     public function show($id)
     {
 
+        Log::info(Util::generateLogMessage('START'));
+        
         // ----------------------------
-        // レコードを検索
+        // 会員情報をIDから検索する
         // ----------------------------
 
-        $user = $this->user->findOrFail($id);
+        $user = $this->users->findById($id);
 
         if (!$user) {
+
+            // ----------------------------
+            // 見つからなかったら一覧に戻る
+            // ----------------------------
+
+            Session::flash('message', self::MESSAGE_NOT_FOUND_END);
+            
+            Log::info(Util::generateLogMessage('END 指定のIDの会員が存在しません'));
+            
             return redirect('/admin/users');
+            
         }
 
+        Log::info(Util::generateLogMessage('END'));
+
+        // ----------------------------
         //検索結果をビューに渡す
+        // ----------------------------
+        
         return view('admin.users.show')
           ->with('user', $user);
     }
 
     /**
-     * @param Request $request
+     * 会員情報の編集画面を表示する
+     * 
      * @param         $id
      *
      * @return $this
      */
-    public function edit(Request $request, $id)
+    public function edit($id)
     {
 
+        Log::info(Util::generateLogMessage('START'));
+
         // ----------------------------
-        // レコードを検索
+        // 会員情報をIDから検索する
         // ----------------------------
 
-        $user = $this->user->findOrFail($id);
+        $user = $this->users->findById($id);
 
         if (!$user) {
-            return redirect('/admin/users');
-        }
 
+            // ----------------------------
+            // 見つからなかったら一覧に戻る
+            // ----------------------------
+
+            Log::info(Util::generateLogMessage('END 指定のIDの会員が存在しません'));
+
+            return redirect('/admin/users');
+
+        }
+        
         // ----------------------------
         // 他の管理者が編集中か
         // ----------------------------
 
-        $data = [
-          'screen_number' => self::SCREEN_NUMBER_UPDATE,
-          'target_id'     => $id,
-          'operator'      => Auth::guard("admin")->user()->id,
-        ];
+        $is_exclusives = $this->users->isExpiredByOtherAdmin($id);
 
-        $is_exclusives = $this->exclusives->isExpiredByOtherAdmin($data);
-
-        if (!$is_exclusives) {
-
-            // ----------------------------
-            // 編集中にする
-            // ----------------------------
-
-            $data["expired_at"] = date("Y/m/d H:i:s", strtotime(Config::get('const.exclusives_time')));
-            $exclusives_id      = $this->exclusives->insertGetId($data);
-
-        }
-
+        Log::info(Util::generateLogMessage('END'));
+        
         // ----------------------------
         //検索結果をビューに渡す
         // ----------------------------
@@ -237,6 +252,8 @@ class UsersController extends Controller
     }
 
     /**
+     * 会員情報を更新する
+     * 
      * @param Request $request
      * @param         $id
      *
@@ -244,113 +261,91 @@ class UsersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Log::info('START', ['file' => __FILE__, 'class' => __CLASS__]);
 
-        $input["name"]  = $request->name;
-        $input["kana"]  = $request->kana;
-        $input["email"] = $request->email;
+        Log::info(Util::generateLogMessage('START'));
 
-        Log::info('Input parameter', ['id' => $id]);
-        Log::info('Input parameter', ['name' => $input["name"]]);
-        Log::info('Input parameter', ['kana' => $input["kana"]]);
-        Log::info('Input parameter', ['email' => $input["email"]]);
+        // ----------------------------
+        // リクエストパラメータを取得
+        // ----------------------------
 
-        $exception = DB::transaction(function () use ($input, $id) {
+        Log::info('入力されたパラメータ', ['id' => $id]);
+        
+        $input = $this->users->getRequest($request);
 
-            // ----------------------------
-            // 他の管理者が編集中か
-            // ----------------------------
+        // ----------------------------
+        // バリデーション
+        // ----------------------------
 
-            $exclusives = [
-              'screen_number' => self::SCREEN_NUMBER_UPDATE,
-              'target_id'     => $id,
-              'operator'      => Auth::guard("admin")->user()->id,
-            ];
+        if (!$this->users->validate($input, $id)) {
 
-            $is_exclusives = $this->exclusives->isExpiredByOtherAdmin($exclusives);
+            $errors = $this->users->getErrors();
 
-            if ($is_exclusives) {
+            $url = sprintf('/admin/users/%s/edit/', $id);
 
-                $url = sprintf('/admin/users/%s/edit/', $id);
+            Session::flash('message', self::MESSAGE_VALID_ERROR_END);
 
-                Session::flash('message', self::MESSAGE_VALID_ERROR_END);
+            Log::info(Util::generateLogMessage('END 入力内容に不備がありました'));
 
-                return redirect($url)
-                  ->with('user', $this->user)
-                  ->withInput();
+            return redirect($url)
+              ->with('user', $input)
+              ->with('errors', $errors)
+              ->withInput();
 
-            }
+        }
 
-            // ----------------------------
-            // 存在チェック
-            // ----------------------------
+        // ----------------------------
+        // 存在チェック
+        // ----------------------------
 
-            $user = $this->user->find($id);
+        $user = $this->users->findById($id);
 
-            if (!$user) {
-
-                Session::flash('message', self::MESSAGE_NOT_FOUND_END);
-
-                return redirect('/admin/users/');
-
-            }
+        if (!$user) {
 
             // ----------------------------
-            // 更新を開始
+            // 見つからなかったら一覧に戻る
             // ----------------------------
+            
+            Session::flash('message', self::MESSAGE_NOT_FOUND_END);
 
-            $result = $this->user->updateUsers($input, $id);
+            Log::info(Util::generateLogMessage('END 指定のIDの会員が存在しません'));
 
-            if ($result == false) {
+            return redirect('/admin/users/');
 
-                $errors = $this->user->errors();
-                $url    = sprintf('/admin/users/%s/edit/', $id);
+        }
+        
+        // ----------------------------
+        // 他の管理者が編集中か
+        // ----------------------------
 
-                Session::flash('message', self::MESSAGE_VALID_ERROR_END);
+        $is_exclusives = $this->users->isExpiredByOtherAdmin($id);
 
-                return redirect($url)
-                  ->with('user', $this->user)
-                  ->with('errors', $errors)
-                  ->withInput();
+        if ($is_exclusives) {
 
-            }
+            $url = sprintf('/admin/users/%s/edit/', $id);
 
-            Log::info('会員が更新されました。', ['id' => $id]);
+            return redirect($url)
+              ->with('user', $input)
+              ->withInput();
 
-            // ----------------------------
-            // 排他制御を削除
-            // ----------------------------
+        }
+        
+        // ----------------------------
+        // 会員を更新する
+        // ----------------------------
 
-            $result = $this->exclusives->deleteExpiredByMine($exclusives);
-
-            // ----------------------------
-            // 操作ログを記録
-            // ----------------------------
-
-            $data = [
-              'screen_number' => self::SCREEN_NUMBER_UPDATE,
-              'target_id'     => $id,
-              'operator'      => Auth::guard("admin")->user()->id,
-              'comment'       => json_encode($input, JSON_UNESCAPED_UNICODE),
-            ];
-
-            $id = $this->ope->registerGetId($data);
-
-            Log::info('操作ログが登録されました。', ['id' => $id]);
-
-            Session::flash('message', self::MESSAGE_UPDATE_END);
-
-        });
-
+        $exception = $this->users->updateUser($input, $id);
+        
         if ($exception) {
 
-            Log::info('EXECUTE FAILURE!', ['file' => __FILE__, 'class' => __CLASS__]);
+            Log::info(Util::generateLogMessage('END 会員の更新に失敗しました'));
 
             return $exception;
 
         }
 
-        Log::info('END', ['file' => __FILE__, 'class' => __CLASS__]);
+        Session::flash('message', self::MESSAGE_UPDATE_END);
+
+        Log::info(Util::generateLogMessage('END'));
 
         return redirect('/admin/users');
 
@@ -363,72 +358,39 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
-        Log::info('START', ['file' => __FILE__, 'class' => __CLASS__]);
+        Log::info(Util::generateLogMessage('START'));
 
-        Log::info('Input parameter', ['$id' => $id]);
+        Log::info('入力されたパラメータ', ['id' => $id]);
 
-        $exception = DB::transaction(function () use ($id) {
+        // ----------------------------
+        // 他の管理者が編集中か
+        // ----------------------------
 
-            // ----------------------------
-            // 他の管理者が編集中か
-            // ----------------------------
+        $is_exclusives = $this->users->isExpiredByOtherAdmin($id);
 
-            $exclusives = [
-              'screen_number' => self::SCREEN_NUMBER_UPDATE,
-              'target_id'     => $id,
-              'operator'      => Auth::guard("admin")->user()->id,
-            ];
+        if ($is_exclusives) {
 
-            $is_exclusives = $this->exclusives->isExpiredByOtherAdmin($exclusives);
+            Session::flash('message', self::MESSAGE_MODIFIED_END);
 
-            if ($is_exclusives) {
+            return redirect('/admin/users/');
 
-                Session::flash('message', self::MESSAGE_MODIFIED_END);
+        }
+        
+        // ----------------------------
+        // 会員を削除する
+        // ----------------------------
 
-                return redirect('/admin/users/');
-
-            }
-
-            // ----------------------------
-            // 削除対象レコードを検索
-            // ----------------------------
-
-            $user = $this->user->find($id);
-
-            // ----------------------------
-            // 論理削除
-            // ----------------------------
-
-            $user->delete();
-
-            Log::info('会員が削除されました。', ['id' => $id]);
-
-            // ----------------------------
-            // 操作ログを記録
-            // ----------------------------
-
-            $data = [
-              'screen_number' => self::SCREEN_NUMBER_DELETE,
-              'target_id'     => $id,
-              'operator'      => Auth::guard("admin")->user()->id,
-              'comment'       => json_encode($user, JSON_UNESCAPED_UNICODE),
-            ];
-
-            $id = $this->ope->registerGetId($data);
-
-            Log::info('操作ログが登録されました。', ['id' => $id]);
-
-        });
+        $exception = $this->users->deleteUser($id);
 
         if ($exception) {
 
-            Log::info('EXECUTE FAILURE!', ['file' => __FILE__, 'class' => __CLASS__]);
+            Log::info(Util::generateLogMessage('END 会員の削除に失敗しました'));
 
             return $exception;
 
         }
-
-        Log::info('END', ['file' => __FILE__, 'class' => __CLASS__]);
+        
+        Log::info(Util::generateLogMessage('END'));
 
         return redirect()->to('/admin/users')->with('message', self::MESSAGE_DELETE_END);
 
