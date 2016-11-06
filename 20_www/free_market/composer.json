@@ -6,7 +6,11 @@
     "type": "project",
     "require": {
         "php": ">=5.5.9",
-        "laravel/framework": "5.2.*"
+        "laravel/framework": "5.2.*",
+        "pear/net_url2": "^2.2.0",
+        "pear/pear_exception": "^1.0.0",
+        "pear/http_request2": "2.3.*",
+        "pear/http_oauth": "0.3.*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -53,5 +57,11 @@
     },
     "config": {
         "preferred-install": "dist"
-    }
+    },
+    "include-path": [
+        "vendor/pear/net_url2",
+        "vendor/pear/pear_exception",
+        "vendor/pear/http_request2",
+        "vendor/pear/http_oauth"
+    ]
 }

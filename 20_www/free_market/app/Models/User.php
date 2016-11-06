@@ -79,19 +79,6 @@ class User extends Authenticatable
      */
     private $errors;
 
-//    /**
-//     * @param $id
-//     *
-//     * @return mixed
-//     */
-//    public function findById($id)
-//    {
-//            $users = $this->findOrFail($id);
-//
-//        return $users;
-//    }
-
-
     /**
      * @param $value
      *
@@ -125,7 +112,7 @@ class User extends Authenticatable
         $v = Validator::make($data, $rules, $this->messages);
 
         if ($v->fails()) {
-            
+
             $this->errors = $v->errors();
             Log::info('validate error', ['errors' => $this->errors]);
 
@@ -179,42 +166,42 @@ class User extends Authenticatable
      */
     public function updateUser($data, $id)
     {
-        
+
         $result = User::where('id', '=', $id)->update(
           ['name' => $data["name"]],
           ['kana' => $data["kana"]],
           ['email' => $data["email"]]
         );
-        
+
         return $result;
 
     }
-    
-    /**
-     * @param $data
-     * @param $id
-     *
-     * @return bool
-     */
-    public function updateUsers($data, $id)
-    {
 
-        if ($this->validate($data, $id)) {
-
-            // アップデート処理
-            User::where('id', '=', $id)->update(
-              ['name' => $data["name"]],
-              ['kana' => $data["kana"]],
-              ['email' => $data["email"]]
-            );
-
-            return true;
-
-        } else {
-
-            return false;
-
-        }
-
-    }
+//    /**
+//     * @param $data
+//     * @param $id
+//     *
+//     * @return bool
+//     */
+//    public function updateUsers($data, $id)
+//    {
+//
+//        if ($this->validate($data, $id)) {
+//
+//            // アップデート処理
+//            User::where('id', '=', $id)->update(
+//              ['name' => $data["name"]],
+//              ['kana' => $data["kana"]],
+//              ['email' => $data["email"]]
+//            );
+//
+//            return true;
+//
+//        } else {
+//
+//            return false;
+//
+//        }
+//
+//    }
 }

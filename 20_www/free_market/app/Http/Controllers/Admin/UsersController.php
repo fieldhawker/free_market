@@ -2,22 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Services\UsersService;
-
-use Util;
-
-
-use DB;
 use Log;
-use Auth;
-//use Hash;
+use Util;
 use Input;
 use Session;
-use OperationLogsClass;
-use App\Models\User;
-use Config;
-use App\Models\Exclusives;
-//use App\OperationLogs;
+use App\Services\UsersService;
+
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -37,14 +27,6 @@ class UsersController extends Controller
     const MESSAGE_NOT_FOUND_END   = 'not found';
     const MESSAGE_VALID_ERROR_END = 'error';
     const MESSAGE_MODIFIED_END    = 'modified';
-//    const SCREEN_NUMBER_REGISTER  = 110;
-//    const SCREEN_NUMBER_UPDATE    = 120;
-//    const SCREEN_NUMBER_DELETE    = 130;
-
-    private $user;
-    private $ope;
-    private $exclusives;
-
 
     private $users;
 
@@ -52,16 +34,12 @@ class UsersController extends Controller
      * UsersController constructor.
      *
      */
-    public function __construct(User $user, OperationLogsClass $ope, Exclusives $exclusives, UsersService $users)
+    public function __construct(UsersService $users)
     {
         $this->users = $users;
 
         $this->middleware('auth:admin');
 
-//
-//        $this->user       = $user;
-//        $this->ope        = $ope;
-//        $this->exclusives = $exclusives;
     }
 
     /**
@@ -116,7 +94,7 @@ class UsersController extends Controller
         // ----------------------------
         // リクエストパラメータを取得
         // ----------------------------
-        
+
         $input = $this->users->getRequest($request);
 
         // ----------------------------
@@ -141,7 +119,7 @@ class UsersController extends Controller
         // ----------------------------
         // 会員を登録する
         // ----------------------------
-        
+
         $exception = $this->users->registerUser($input);
 
         if ($exception) {
@@ -163,7 +141,7 @@ class UsersController extends Controller
 
     /**
      * 会員情報の詳細を取得する
-     * 
+     *
      * @param $id
      *
      * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
@@ -172,7 +150,7 @@ class UsersController extends Controller
     {
 
         Log::info(Util::generateLogMessage('START'));
-        
+
         // ----------------------------
         // 会員情報をIDから検索する
         // ----------------------------
@@ -186,11 +164,11 @@ class UsersController extends Controller
             // ----------------------------
 
             Session::flash('message', self::MESSAGE_NOT_FOUND_END);
-            
+
             Log::info(Util::generateLogMessage('END 指定のIDの会員が存在しません'));
-            
+
             return redirect('/admin/users');
-            
+
         }
 
         Log::info(Util::generateLogMessage('END'));
@@ -198,14 +176,14 @@ class UsersController extends Controller
         // ----------------------------
         //検索結果をビューに渡す
         // ----------------------------
-        
+
         return view('admin.users.show')
           ->with('user', $user);
     }
 
     /**
      * 会員情報の編集画面を表示する
-     * 
+     *
      * @param         $id
      *
      * @return $this
@@ -232,7 +210,7 @@ class UsersController extends Controller
             return redirect('/admin/users');
 
         }
-        
+
         // ----------------------------
         // 他の管理者が編集中か
         // ----------------------------
@@ -240,7 +218,7 @@ class UsersController extends Controller
         $is_exclusives = $this->users->isExpiredByOtherAdmin($id);
 
         Log::info(Util::generateLogMessage('END'));
-        
+
         // ----------------------------
         //検索結果をビューに渡す
         // ----------------------------
@@ -253,7 +231,7 @@ class UsersController extends Controller
 
     /**
      * 会員情報を更新する
-     * 
+     *
      * @param Request $request
      * @param         $id
      *
@@ -269,7 +247,7 @@ class UsersController extends Controller
         // ----------------------------
 
         Log::info('入力されたパラメータ', ['id' => $id]);
-        
+
         $input = $this->users->getRequest($request);
 
         // ----------------------------
@@ -304,7 +282,7 @@ class UsersController extends Controller
             // ----------------------------
             // 見つからなかったら一覧に戻る
             // ----------------------------
-            
+
             Session::flash('message', self::MESSAGE_NOT_FOUND_END);
 
             Log::info(Util::generateLogMessage('END 指定のIDの会員が存在しません'));
@@ -312,7 +290,7 @@ class UsersController extends Controller
             return redirect('/admin/users/');
 
         }
-        
+
         // ----------------------------
         // 他の管理者が編集中か
         // ----------------------------
@@ -328,13 +306,13 @@ class UsersController extends Controller
               ->withInput();
 
         }
-        
+
         // ----------------------------
         // 会員を更新する
         // ----------------------------
 
         $exception = $this->users->updateUser($input, $id);
-        
+
         if ($exception) {
 
             Log::info(Util::generateLogMessage('END 会員の更新に失敗しました'));
@@ -375,7 +353,7 @@ class UsersController extends Controller
             return redirect('/admin/users/');
 
         }
-        
+
         // ----------------------------
         // 会員を削除する
         // ----------------------------
@@ -389,7 +367,7 @@ class UsersController extends Controller
             return $exception;
 
         }
-        
+
         Log::info(Util::generateLogMessage('END'));
 
         return redirect()->to('/admin/users')->with('message', self::MESSAGE_DELETE_END);

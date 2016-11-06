@@ -8,7 +8,6 @@ class UsersControllerTest extends TestCase
 {
     use DatabaseMigrations;
 
-
     /**
      *
      */
@@ -16,7 +15,6 @@ class UsersControllerTest extends TestCase
     {
 
         parent::setUp();
-
 
     }
 
@@ -30,6 +28,8 @@ class UsersControllerTest extends TestCase
         // 未ログインはログイン画面にリダイレクト
         $this->visit('/admin/')->see('Admin Login');
         $this->visit('/admin/users/create/')->see('Admin Login');
+        $this->visit('/admin/users/999')->see('Admin Login');
+        $this->visit('/admin/users/999/edit/')->see('Admin Login');
 
     }
 
@@ -79,6 +79,59 @@ class UsersControllerTest extends TestCase
           ->seeStatusCode(200)
           ->dontSee('エラーが発生しました!')
           ->see('登録が完了しました。');
+
+        $this->seeInDatabase('users',['email'=>'takano@se-project.co.jp']);
+
+    }
+
+    public function test会員編集()
+    {
+
+        // ログインする
+        $admin = factory(App\Models\Admin::class)->create();
+        $this->actingAs($admin, 'admin');
+        
+        // テスト会員を生成
+        $user = factory(App\Models\User::class)->create();
+        
+        // 一意な入力情報を生成
+        $faker = Faker\Factory::create('ja_JP');
+        $email = $faker->unique()->email;
+        
+        $url = sprintf('/admin/users/%s/edit/', $user->id);
+
+        // 会員を編集する
+        $this->visit($url)
+          // 画面表示に成功しているか
+          ->see('会員編集')
+          // 初期値の確認
+          ->seeInField('name', $user->name)
+          ->seeInField('kana', $user->kana)
+          ->seeInField('email', $user->email)
+          // テストデータの入力
+          ->type('テスト', 'name')
+          ->type('テスト', 'kana')
+          ->type($email, 'email')
+          ->press('編集')
+          ->seeStatusCode(200)
+          ->dontSee('エラーが発生しました!')
+          ->see('編集が完了しました。');
+        
+
+
+    }
+
+    public function test会員削除()
+    {
+
+        // ログインする
+        $admin = factory(App\Models\Admin::class)->create();
+        $this->actingAs($admin, 'admin');
+
+        // テスト会員を生成
+        $user = factory(App\Models\User::class)->create();
+        
+        $url = sprintf('/admin/users/%s', $user->id);
 
     }
 

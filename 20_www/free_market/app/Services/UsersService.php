@@ -27,6 +27,7 @@ class UsersService
      *
      * @param UsersRepositoryInterface         $users
      * @param OperationLogsRepositoryInterface $ope
+     * @param ExclusivesRepositoryInterface    $exclusives
      */
     public function __construct(
       UsersRepositoryInterface $users,
@@ -39,7 +40,7 @@ class UsersService
     }
 
     /**
-     * 会員情報をすべて取得する
+     * 会員情報を論理削除以外すべて取得する
      *
      * @return mixed
      */
@@ -202,6 +203,8 @@ class UsersService
 
 
     /**
+     * 会員情報を編集する
+     * 
      * @param $input
      * @param $id
      *
@@ -253,6 +256,13 @@ class UsersService
     }
 
 
+    /**
+     * 会員情報を削除する
+     * 
+     * @param $id
+     *
+     * @return mixed
+     */
     public function deleteUser($id)
     {
 

@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         // Commands\Inspire::class,
+        \App\Console\Commands\PostInterestingArticle::class, // サイボウズLIVEへの興味深い記事の投稿
     ];
 
     /**
